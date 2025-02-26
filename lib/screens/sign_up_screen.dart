@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/language_provider.dart';
 import '../services/ApiService.dart';
+import 'package:intl/intl.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -12,33 +13,36 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _dateOfBirthController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
 
   bool _isLoading = false;
 
   Future<void> _signUp() async {
-    print("hello");
-    if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Passwords do not match")),
-      );
-      return;
-    }
+
+    if(!_validateInputs())
+      {
+        return;
+      }
 
     setState(() {
       _isLoading = true;
     });
 
+    final DateFormat inputFormat = DateFormat("M/D/yyyy");
+    final DateTime parsedDate = inputFormat.parse(_dateOfBirthController.text);
+    final String dateOfBirth = parsedDate.toIso8601String();
     Map<String, dynamic> requestData = {
-      "username": "string",
-      "password": "string",
-      "first_name": "string",
-      "last_name": "string",
-      "dateOfBirth": "2005-02-23T17:44:46.020Z",
-      "phone_number": "string"
+      "username": _usernameController.text.trim(),
+      "password": _passwordController.text.trim(),
+      "first_name": _firstNameController.text.trim(),
+      "last_name": _lastNameController.text.trim(),
+      "dateOfBirth": dateOfBirth,
+      "email": _emailController.text.trim()
     };
 
 
@@ -49,7 +53,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _isLoading = false;
       });
 
-      if (response != null && response['success']) {
+      print('API response: $response');
+
+      if (response != null && response['message'] == 'Register successful') {//change the second condition
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Sign-Up Successful!")),
         );
@@ -67,6 +73,73 @@ class _SignUpScreenState extends State<SignUpScreen> {
         SnackBar(content: Text("Error: $error")),
       );
     }
+  }
+
+  bool _validateInputs() {
+    String firstName = _firstNameController.text.trim();
+    String lastName = _lastNameController.text.trim();
+    String username = _usernameController.text.trim();
+    String dateOfBirth = _dateOfBirthController.text.trim();
+    String email = _emailController.text.trim();
+    String password = _passwordController.text;
+
+    if (firstName.isEmpty) {
+      _showError('First name cannot be empty.');
+      return false;
+    }
+
+    if (lastName.isEmpty) {
+      _showError('Last name cannot be empty.');
+      return false;
+    }
+
+    if (username.isEmpty) {
+      _showError('Username cannot be empty.');
+      return false;
+    }
+
+    if (dateOfBirth.isEmpty) {
+      _showError('Date of birth cannot be empty.');
+      return false;
+    }
+
+    if (email.isEmpty) {
+      _showError('Email cannot be empty.');
+      return false;
+    } else if (!_isValidEmail(email)) {
+      _showError('Please enter a valid email address.');
+      return false;
+    }
+
+    if (password.isEmpty) {
+      _showError('Password cannot be empty.');
+      return false;
+    }
+
+    if (password.length < 6)
+      {
+        _showError('Password length cannot be less than 6');
+        return false;
+      }
+
+    // All validations passed
+    return true;
+  }
+
+  void _showError(String error)
+  {
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(error), backgroundColor: Colors.red)
+    );
+  }
+
+  bool _isValidEmail(String email) {
+    // Simple regex for email validation
+    final RegExp emailRegExp = RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    );
+    return emailRegExp.hasMatch(email);
   }
 
   @override
@@ -98,9 +171,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _nameController,
+                controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: languageProvider.translate('Name'),
+                  labelText: languageProvider.translate('Username'),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _firstNameController,
+                decoration: InputDecoration(
+                  labelText: languageProvider.translate('First Name'),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _lastNameController,
+                decoration: InputDecoration(
+                  labelText: languageProvider.translate('Last Name'),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
                 ),
               ),
@@ -121,15 +210,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
                 ),
               ),
-              const SizedBox(height: 10),
               TextField(
+                controller: _dateOfBirthController,
+                readOnly: true, // Prevents manual editing
+                onTap: () => _selectDate(context),
+                decoration: const InputDecoration(
+                  labelText: 'Date of Birth',
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+              ),
+              const SizedBox(height: 10),
+              /*TextField(
                 controller: _confirmPasswordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: languageProvider.translate('confirmPassword'),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
                 ),
-              ),
+              ),*/
               const SizedBox(height: 20),
               _isLoading
                   ? CircularProgressIndicator()
@@ -159,6 +257,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime initialDate = DateTime.now();
+    DateTime firstDate = DateTime(1900);
+    DateTime lastDate = DateTime.now();
+
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (pickedDate != null) {
+      // Format the date as desired, e.g., MM/dd/yyyy
+      String formattedDate = DateFormat.yMd().format(pickedDate);
+
+      // Update the date controller with the formatted date
+      _dateOfBirthController.text = formattedDate;
+    }
   }
 }
 
