@@ -116,9 +116,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return false;
     }
 
-    if (password.length < 6)
+    if (password.length < 3)
       {
-        _showError('Password length cannot be less than 6');
+        _showError('Password length cannot be less than 3');
         return false;
       }
 
