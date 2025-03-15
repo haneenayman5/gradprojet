@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';  // Correct import for fluttertoast
 import 'package:provider/provider.dart';
-import '../providers/language_provider.dart';
+import '../../../../providers/language_provider.dart';
 
 class WelcomeScreen extends StatelessWidget {
   @override

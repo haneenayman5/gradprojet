@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import '../providers/language_provider.dart';
-import '../services/ApiService.dart';
+import 'package:untitled3/features/auth/presentation/bloc/auth/sign_up/sign_up_bloc.dart';
+import 'package:untitled3/features/auth/presentation/bloc/auth/sign_up/sign_up_events.dart';
+import 'package:untitled3/features/auth/presentation/bloc/auth/sign_up/sign_up_states.dart';
+import '../../../../providers/language_provider.dart';
+import '../../data/data_sources/remote/ApiService.dart';
 import 'package:intl/intl.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -20,8 +24,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _isLoading = false;
-
   Future<void> _signUp() async {
 
     if(!_validateInputs())
@@ -29,50 +31,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return;
       }
 
-    setState(() {
-      _isLoading = true;
-    });
-
     final DateFormat inputFormat = DateFormat("M/D/yyyy");
     final DateTime parsedDate = inputFormat.parse(_dateOfBirthController.text);
-    final String dateOfBirth = parsedDate.toIso8601String();
-    Map<String, dynamic> requestData = {
-      "username": _usernameController.text.trim(),
-      "password": _passwordController.text.trim(),
-      "first_name": _firstNameController.text.trim(),
-      "last_name": _lastNameController.text.trim(),
-      "dateOfBirth": dateOfBirth,
-      "email": _emailController.text.trim()
-    };
 
+    BlocProvider.of<SignUpBloc>(context).add(
+      SignUpRequested(username: _usernameController.text.trim(), password: _passwordController.text, email: _emailController.text, dateOfBirth: parsedDate, firstName: _firstNameController.text, lastName: _lastNameController.text,  )
+    );
 
-    try {
-      final response = await ApiService.postRequest('/Account/Register', requestData);
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      print('API response: $response');
-
-      if (response != null && response['message'] == 'Register successful') {//change the second condition
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Sign-Up Successful!")),
-        );
-        Navigator.pushNamed(context, '/signin'); // Redirect to Sign-In page
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response?['message'] ?? "Sign-Up Failed")),
-        );
-      }
-    } catch (error) {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $error")),
-      );
-    }
   }
 
   bool _validateInputs() {
@@ -220,28 +185,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              /*TextField(
-                controller: _confirmPasswordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: languageProvider.translate('confirmPassword'),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-                ),
-              ),*/
+
               const SizedBox(height: 20),
-              _isLoading
-                  ? CircularProgressIndicator()
-                  : ElevatedButton(
-                onPressed: _signUp,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
-                  backgroundColor: Colors.blue,
-                ),
-                child: Text(
-                  languageProvider.translate('signUp'),
-                  style: const TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
+
+              BlocConsumer<SignUpBloc, SignUpState>(
+                  builder: (context, state) {
+                    if(state is SignUpLoading)
+                      {
+                        return const CircularProgressIndicator();
+                      }
+                    return ElevatedButton(
+                          onPressed: _signUp,
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                            backgroundColor: Colors.blue,
+                          ),
+                          child: Text(
+                            languageProvider.translate('signUp'),
+                            style: const TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        );
+              },
+                  listener: (context, state) {
+                    if(state is SignUpSuccess)
+                      {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Sign-in successful")));
+                            Navigator.pushNamed(context, '/signin');//make a routes file for all routes
+                      }
+                    else if(state is SignUpFailure) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(state.message)));
+                    }
+                  }),
+
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
