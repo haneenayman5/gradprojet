@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/features/auth/presentation/bloc/auth/sign_in/sign_in_bloc.dart';
 import 'package:untitled3/features/auth/presentation/bloc/auth/sign_in/sign_in_events.dart';
 import 'package:untitled3/features/auth/presentation/bloc/auth/sign_in/sign_in_states.dart';
@@ -161,12 +163,13 @@ class _SignInScreenState extends State<SignInScreen>
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Sign-in successful")),
                     );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ChatTestScreen(),//---this should navigate to the chat test screen---
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const ChatTestScreen(),//---this should navigate to the chat test screen---
+                    //   ),
+                    // );
+                    context.go(AppRoute.homePath);
                   }
                   else if (state is SignInFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(

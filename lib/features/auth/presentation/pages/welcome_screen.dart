@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';  // Correct import for fluttertoast
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled3/core/util/app_route.dart';
 import '../../../../providers/language_provider.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -89,7 +91,7 @@ class WelcomeScreen extends StatelessWidget {
                     SizedBox(width: 20),
                     OutlinedButton(
                       onPressed: () {
-                        _handleNavigation(context, '/signin', t);
+                        context.go(AppRoute.signInPath);
                       },
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),  // Adjust button width and height

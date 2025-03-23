@@ -1,6 +1,9 @@
 //this screen is for testing purposes only
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:untitled3/core/util/app_route.dart';
+import 'package:untitled3/features/chat/presentation/views/chat_view.dart';
 import 'chat_screen.dart'; // Make sure this file exports ChatPage
 
 class ChatTestScreen extends StatefulWidget {
@@ -29,12 +32,18 @@ class _ChatTestScreenState extends State<ChatTestScreen> {
     }
 
     // Navigate to the chat screen, passing the sender and receiver IDs.
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ChatPage(senderId: sender, receiverId: receiver),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (_) => ChatView(senderId: sender, receiverId: receiver),
+    //     // builder: (_) => ChatPage(senderId: sender, receiverId: receiver),
+    //   ),
+    // );
+
+    context.go(AppRoute.kChatPath, extra: {
+      'senderId': sender,
+      'receiverId': receiver
+    });
   }
 
   @override

@@ -14,20 +14,27 @@ import 'package:untitled3/features/chat/data/data_sources/chat_source.dart';
 import 'package:untitled3/features/chat/data/repositories/chat_repository_impl.dart';
 import 'package:untitled3/features/chat/domain/repositories/chat_repository.dart';
 import 'package:untitled3/features/chat/domain/usecases/chat_usecase.dart';
+import 'package:untitled3/features/home/data/data_source/ConversationService.dart';
+import 'package:untitled3/features/home/domain/repository/ChatHomeRepository.dart';
+import 'package:untitled3/features/home/domain/usecase/GetConversationsUsecase.dart';
+import 'package:untitled3/features/home/domain/usecase/GetSenderIdUsecase.dart';
+import 'package:untitled3/features/home/presentation/bloc/chat_home_bloc.dart';
 
 import 'features/auth/domain/usecases/sign_up.dart';
 import 'features/auth/presentation/bloc/auth/sign_up/sign_up_bloc.dart';
 import 'features/chat/presentation/blocs/chat_bloc.dart';
+import 'features/home/data/repository/ChatHomeRepositoryImpl.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependancies() async {
-
-  sl.registerSingleton<Dio>(Dio());
-
   sl.registerSingleton<SecureStorage>(
       SecureStorage()
   );
+
+  // sl.registerSingleton<Dio>(Dio());
+
+  sl.registerSingleton<Dio>(createDioWithToken(sl()));
 
   await initializeAuth();
 
@@ -39,6 +46,14 @@ Future<void> initializeDependancies() async {
 
   sl.registerFactory<ChatBloc>(
           () => ChatBloc(chatUseCase: sl())
+  );
+
+  sl.registerSingleton<ConversationService>(ConversationService(sl()));
+  sl.registerSingleton<ChatHomeRepository>(ChatHomeRepositoryImpl(service: sl(), secureStorage: sl()));
+  sl.registerSingleton<GetConversationUsecase>(GetConversationUsecase(chatHomeRepository: sl()));
+  sl.registerSingleton<GetSenderIdUseCase>(GetSenderIdUseCase(chatHomeRepository: sl()));
+  sl.registerFactory<ChatHomeBloc>(
+      () => ChatHomeBloc(getConversationUsecase: sl(), getSenderIdUseCase: sl())
   );
 
 }
@@ -81,4 +96,24 @@ Future<void> initializeAuth() async {
 
 Future<void> initializeChat() async {
 
+}
+
+Dio createDioWithToken(SecureStorage secureStorage) {
+  final dio = Dio();
+
+  dio.interceptors.add(
+    InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        // Retrieve the token from secure storage.
+        final token = await secureStorage.getToken();
+        if (token != null && token.isNotEmpty) {
+          // Add the token to the Authorization header.
+          options.headers["Authorization"] = "Bearer $token";
+        }
+        return handler.next(options);
+      },
+    ),
+  );
+
+  return dio;
 }

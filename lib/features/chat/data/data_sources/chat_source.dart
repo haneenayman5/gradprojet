@@ -4,6 +4,7 @@ import 'package:signalr_netcore/signalr_client.dart';
 import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/core/storage/storage.dart';
 import 'package:untitled3/features/chat/data/models/message.dart';
+import 'package:logging/logging.dart';
 
 class ChatService {
   late HubConnection _hubConnection;
@@ -17,10 +18,26 @@ class ChatService {
     String? token = await secureStorage.getToken();
     String url = '$chatBaseURL/ChatHub?userId=$username&access_token=$token';
     print(url);
+
+    // Configer the logging
+    Logger.root.level = Level.ALL;
+// Writes the log messages to the console
+    Logger.root.onRecord.listen((LogRecord rec) {
+      print('${rec.level.name}: ${rec.time}: ${rec.message}');
+    });
+
+// If you want only to log out the message for the higer level hub protocol:
+    final hubProtLogger = Logger("SignalR - hub");
+
+    // _hubConnection = HubConnectionBuilder()
+    //     .withUrl(url,  options: HttpConnectionOptions(
+    //   transport: HttpTransportType.LongPolling,
+    // ))
+    //     .build();
     _hubConnection = HubConnectionBuilder()
         .withUrl(url,  options: HttpConnectionOptions(
-      transport: HttpTransportType.LongPolling,
-    ))
+        transport: HttpTransportType.LongPolling,
+      )).configureLogging(hubProtLogger)
         .build();
     try {
       await _hubConnection.start();
