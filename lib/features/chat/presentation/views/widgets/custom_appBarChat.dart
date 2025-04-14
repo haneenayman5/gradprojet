@@ -10,7 +10,21 @@ class CustomAppbarChat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+      Align(
+      alignment: Alignment.topLeft,
+      child: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: const Icon(Icons.arrow_back),
+        color: Colors.blue,
+      ),
+    ),
+
+     Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -34,6 +48,6 @@ class CustomAppbarChat extends StatelessWidget {
           )
         ],
       ),
-    );
+    ) ]);
   }
 }

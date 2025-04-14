@@ -6,16 +6,19 @@ class ChatListview extends StatelessWidget {
   const ChatListview({
     super.key,
     required this.controller,
-    required this.messages, required this.name, required this.time,
+    required this.messages,
+    required this.name,
+    required this.time,
   });
+
   final ScrollController controller;
   final List<String> messages;
-  final String name ;
+  final String name;
   final String myName = 'mo';
-  final List <DateTime> time;
+  final List<DateTime> time;
+
   @override
   Widget build(BuildContext context) {
-
     return Expanded(
       child: ListView.builder(
         padding: const EdgeInsets.only(top: 15, bottom: 5),
@@ -23,14 +26,26 @@ class ChatListview extends StatelessWidget {
         controller: controller,
         itemCount: messages.length,
         itemBuilder: (context, index) {
-          return 
-          myName != name ?
-           ChatContainer(
-            text: messages[index] ,
-            time:time[index],
-          ):ChatanotherContainer(text: messages[index], time: time[index]);
+          final senderId = name;
+
+          return myName != senderId
+              ? ChatContainer(
+            text: messages[index],
+            time: time[index],
+            senderId: senderId,
+            currentUserId: myName,
+          )
+              : ChatAnotherContainer(
+            text: messages[index],
+            time: time[index],
+            senderId: senderId,
+            currentUserId: myName,
+          );
         },
       ),
     );
   }
 }
+
+
+

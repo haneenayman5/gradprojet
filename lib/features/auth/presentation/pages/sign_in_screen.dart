@@ -185,8 +185,21 @@ class _SignInScreenState extends State<SignInScreen>
                   // Otherwise, show an ElevatedButton that triggers the sign-in process.
                   return ElevatedButton(
                     onPressed: () => _signIn(context),
-                    child: Text("Sign In"),
-                  );
+                  style: ElevatedButton.styleFrom(
+                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                       backgroundColor: Colors.blue,
+                     ),
+                  child: Text(
+                      languageProvider.translate('signIn'),
+                      style: TextStyle(
+                         fontSize: buttonFontSize,
+                         color: Colors.white,
+                      ),
+                    ),
+                   );
+
+                  const SizedBox(height: 10);
+
                 },
                 ),
 

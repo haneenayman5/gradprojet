@@ -17,7 +17,7 @@ class HomeView extends StatelessWidget {
       create: (context) => SelectCategoryCubit(),
       child:  Scaffold(
         endDrawer: const Drawer(
-          backgroundColor: kDrawerColor,
+          backgroundColor: Colors.blue,
           child: CustomDrawer(),
         ),
         floatingActionButton: FloatingActionButton(

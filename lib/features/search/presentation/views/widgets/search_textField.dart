@@ -60,7 +60,7 @@ class _SearchTextfieldState extends State<SearchTextfield> {
         focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide(color: kContainerColor)),
-        hintText: "Search...",
+        hintText: "Chat Search...",
         hintStyle: Styles.textStyle16
             .copyWith(fontWeight: FontWeight.w600, color: Colors.black),
         errorStyle: Styles.textStyle16.copyWith(

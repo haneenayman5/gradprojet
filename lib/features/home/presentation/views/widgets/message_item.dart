@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/core/util/styles.dart';
 import 'package:untitled3/core/util/widgets/custom_iconButton.dart';
+import 'package:untitled3/features/home/presentation/bloc/chat_home_bloc.dart';
+import 'package:untitled3/features/home/presentation/bloc/chat_home_events.dart';
 import 'package:untitled3/features/home/presentation/views/widgets/story_item.dart';
 
 class MessageItem extends StatelessWidget {
@@ -19,6 +21,7 @@ class MessageItem extends StatelessWidget {
     required this.lastMessageTime,
     this.onDismissed,
   });
+
   final int notify;
   final String senderId, receiverId, id;
   final String lastMessage;
@@ -27,16 +30,20 @@ class MessageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: Dismissible(
-        onDismissed: (direction) {},
+        onDismissed: (direction) {
+          if (onDismissed != null) onDismissed!(direction);
+        },
         key: Key(id),
         secondaryBackground: Container(
           padding: const EdgeInsets.only(right: 20),
           alignment: Alignment.centerRight,
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: Colors.white10,
           ),
           child: const CustomIconButton(
             size: 40,
@@ -61,46 +68,74 @@ class MessageItem extends StatelessWidget {
         child: Column(
           children: [
             ListTile(
-              onTap: () {
-                GoRouter.of(context).push(AppRoute.kChatPath, extra: {
-                  'senderId': senderId,
-                  'receiverId': receiverId
-                });
+              onTap: () async {
+                await GoRouter.of(context).push(
+                  AppRoute.kChatPath,
+                  extra: {
+                    'senderId': senderId,
+                    'receiverId': receiverId,
+                  },
+                );
+
+                context.read<ChatHomeBloc>().add(ChatHomeLoadConversation());
               },
               leading: const StoryItem(
                 size: 40,
-                 sizeImage: 40,
+                sizeImage: 40,
               ),
               title: Text(
                 receiverId,
                 style: Styles.textStyle18.copyWith(
-                    fontWeight: FontWeight.w600, fontFamily: kCarosFont),
+                  fontWeight: FontWeight.w600,
+                  fontFamily: kCarosFont,
+                ),
               ),
-              subtitle: Text(lastMessage,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Styles.textStyle16),
+              subtitle: Text(
+                lastMessage,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Styles.textStyle16,
+              ),
               trailing: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    DateFormat('h:mm').format(lastMessageTime),
+                    _formatMessageTime(lastMessageTime, now),
                     style: Styles.textStyle16,
                   ),
-                  notification()
+                  notification(),
                 ],
               ),
             ),
             Divider(
               color: kContainerColor,
               indent: 110,
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  /// 📆 Updated to handle local time correctly
+  String _formatMessageTime(DateTime messageTime, DateTime now) {
+    final localMessageTime = messageTime.toLocal();
+    final localNow = now.toLocal();
+
+    final today = DateTime(localNow.year, localNow.month, localNow.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final messageDate = DateTime(
+        localMessageTime.year, localMessageTime.month, localMessageTime.day);
+
+    if (messageDate == today) {
+      return 'Today';
+    } else if (messageDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return DateFormat('dd/MM/yyyy').format(localMessageTime);
+    }
   }
 
   Widget notification() {
@@ -110,8 +145,10 @@ class MessageItem extends StatelessWidget {
       return Container(
         height: 25,
         width: 25,
-        decoration:
-            const BoxDecoration(color: kNotifyColor, shape: BoxShape.circle),
+        decoration: const BoxDecoration(
+          color: kNotifyColor,
+          shape: BoxShape.circle,
+        ),
         child: Center(
           child: Text('$notify', style: Styles.textStyle14),
         ),
@@ -119,3 +156,6 @@ class MessageItem extends StatelessWidget {
     }
   }
 }
+
+
+
