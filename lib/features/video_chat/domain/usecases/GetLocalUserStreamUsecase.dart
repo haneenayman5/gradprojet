@@ -1,0 +1,12 @@
+import 'package:untitled3/features/video_chat/domain/repository/VideoChatRepository.dart';
+
+class GetLocalUserStreamUsecase {
+  final VideoChatRepository repository;
+
+  GetLocalUserStreamUsecase({required this.repository});
+
+  Stream<int?> call() {
+    // This returns a stream of remote user IDs (or null when no remote user is present)
+    return repository.localUserStream;
+  }
+}

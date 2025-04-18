@@ -21,6 +21,30 @@ class _ApiService implements ApiService {
   String? baseUrl;
 
   @override
+  Future<HttpResponse<UserModel>> getUser(username) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<UserModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/User/GetUser/{username}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = UserModel.fromJson(_result.data!);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<List<UserModel>>> getUsers() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -34,7 +58,7 @@ class _ApiService implements ApiService {
     )
             .compose(
               _dio.options,
-              '/Users',
+              '/User/GetUsers',
               queryParameters: queryParameters,
               data: _data,
             )

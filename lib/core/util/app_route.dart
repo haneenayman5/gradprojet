@@ -6,18 +6,20 @@ import 'package:untitled3/features/auth/presentation/pages/sign_up_screen.dart';
 import 'package:untitled3/features/auth/presentation/pages/welcome_screen.dart';
 import 'package:untitled3/features/chat/presentation/pages/chat_screen_testing.dart';
 import 'package:untitled3/features/chat/presentation/views/chat_view.dart';
-import 'package:untitled3/features/home/presentation/views/home_view.dart';
+import 'package:untitled3/features/video_home/presentation/views/home_view.dart';
 import 'package:untitled3/features/search/presentation/views/search_view.dart';
+import 'package:untitled3/features/video_chat/presentation/pages/VideoChatTest.dart';
 
 abstract class AppRoute {
   static String welcomePath = '/';
-  static String homePath = '/home';
+  static String homePath = '/video_home';
   static String kChatPath = '/ChatView';
   static String kSearchPath = '/SearchView';
   static String signInPath = '/signin';
   static String signUpPath =  '/signup';
   static String forgetPasswordPath = '/forgot_password';
   static String chatTestPath = '/chat_test';
+  static String videoChatTestPath = '/video_test';
 
   static final router = GoRouter(routes: [
     GoRoute(
@@ -56,6 +58,15 @@ abstract class AppRoute {
     GoRoute(
       path: chatTestPath,
       builder: (context, state) => const ChatTestScreen(),
+    ),
+    GoRoute(
+      path: videoChatTestPath,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        final username1 = extra['username1'] as String;
+        final username2 = extra['username2'] as String;
+        return VideoChatTestPage(username1: username1, username2: username2);
+      }
     ),
 
   ]);

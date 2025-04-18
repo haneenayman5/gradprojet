@@ -71,6 +71,24 @@ class WelcomeScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     // _handleNavigation(context, '/signup', t);
+                    //     GoRouter.of(context).push(AppRoute.videoChatTestPath);
+                    //   },
+                    //   style: ElevatedButton.styleFrom(
+                    //     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),  // Adjust button width and height
+                    //     backgroundColor: Colors.blue,  // Button background color
+                    //     minimumSize: Size(150, 60),  // Set minimum size for width and height
+                    //   ),
+                    //   child: Text(
+                    //     t('videoChat'),
+                    //     style: TextStyle(
+                    //       color: Colors.white,  // Change text color
+                    //       fontSize: 20,  // Adjust font size
+                    //     ),
+                    //   ),
+                    // ),
                     ElevatedButton(
                       onPressed: () {
                         _handleNavigation(context, '/signup', t);

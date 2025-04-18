@@ -15,7 +15,10 @@ part 'ApiService.g.dart';
 abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
-  @GET('/Users')//this is not yet implemented in the backend
+  @GET('/User/GetUser/{username}')
+  Future<HttpResponse<UserModel>> getUser(String username);
+
+  @GET('/User/GetUsers')
   Future<HttpResponse<List<UserModel>>> getUsers();
 
   @POST('/Account/Login')

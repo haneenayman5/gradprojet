@@ -14,16 +14,24 @@ import 'package:untitled3/features/chat/data/data_sources/chat_source.dart';
 import 'package:untitled3/features/chat/data/repositories/chat_repository_impl.dart';
 import 'package:untitled3/features/chat/domain/repositories/chat_repository.dart';
 import 'package:untitled3/features/chat/domain/usecases/chat_usecase.dart';
-import 'package:untitled3/features/home/data/data_source/ConversationService.dart';
-import 'package:untitled3/features/home/domain/repository/ChatHomeRepository.dart';
-import 'package:untitled3/features/home/domain/usecase/GetConversationsUsecase.dart';
-import 'package:untitled3/features/home/domain/usecase/GetSenderIdUsecase.dart';
-import 'package:untitled3/features/home/presentation/bloc/chat_home_bloc.dart';
+import 'package:untitled3/features/video_home/data/data_source/ConversationService.dart';
+import 'package:untitled3/features/video_home/domain/repository/ChatHomeRepository.dart';
+import 'package:untitled3/features/video_home/domain/usecase/GetConversationsUsecase.dart';
+import 'package:untitled3/features/video_home/domain/usecase/GetSenderIdUsecase.dart';
+import 'package:untitled3/features/video_home/presentation/bloc/chat_home_bloc.dart';
+import 'package:untitled3/features/video_chat/data/data_sources/AgoraService.dart';
+import 'package:untitled3/features/video_chat/data/repository/AgoraVideoChatRepository.dart';
+import 'package:untitled3/features/video_chat/domain/repository/VideoChatRepository.dart';
+import 'package:untitled3/features/video_chat/domain/usecases/GetLocalUserStreamUsecase.dart';
+import 'package:untitled3/features/video_chat/domain/usecases/GetRemoteUserStreamUsecase.dart';
+import 'package:untitled3/features/video_chat/domain/usecases/connectToVideoChat.dart';
+import 'package:untitled3/features/video_chat/domain/usecases/disconnectFromVideoChat.dart';
+import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_bloc.dart';
 
 import 'features/auth/domain/usecases/sign_up.dart';
 import 'features/auth/presentation/bloc/auth/sign_up/sign_up_bloc.dart';
 import 'features/chat/presentation/blocs/chat_bloc.dart';
-import 'features/home/data/repository/ChatHomeRepositoryImpl.dart';
+import 'features/video_home/data/repository/ChatHomeRepositoryImpl.dart';
 
 final sl = GetIt.instance;
 
@@ -31,8 +39,6 @@ Future<void> initializeDependancies() async {
   sl.registerSingleton<SecureStorage>(
       SecureStorage()
   );
-
-  // sl.registerSingleton<Dio>(Dio());
 
   sl.registerSingleton<Dio>(createDioWithToken(sl()));
 
@@ -56,6 +62,7 @@ Future<void> initializeDependancies() async {
       () => ChatHomeBloc(getConversationUsecase: sl(), getSenderIdUseCase: sl())
   );
 
+  await initializeVideoChatDependencies();
 }
 
 Future<void> initializeAuth() async {
@@ -94,7 +101,40 @@ Future<void> initializeAuth() async {
   );
 }
 
-Future<void> initializeChat() async {
+Future<void> initializeVideoChatDependencies() async {
+  sl.registerSingleton<AgoraService>(
+    AgoraService(sl())
+  );
+
+  sl.registerSingleton<VideoChatRepository>(
+        AgoraVideoChatRepository(agoraService: sl()),
+  );
+
+
+  // Register the use cases that depend on the repository.
+  sl.registerSingleton<ConnectToVideoChatUsecase>(
+        ConnectToVideoChatUsecase(repository: sl()),
+  );
+
+  sl.registerSingleton<DisconnectFromVideoChatUsecase>(
+    DisconnectFromVideoChatUsecase(videoChatRepository: sl()),
+  );
+
+  sl.registerSingleton<GetLocalUserStreamUsecase>(
+        GetLocalUserStreamUsecase(repository: sl<VideoChatRepository>()),
+  );
+
+  sl.registerSingleton<GetRemoteUserStreamUsecase>(
+    GetRemoteUserStreamUsecase(repository: sl()),
+  );
+
+  // Register the BLoC. Using registerFactory here to create a new instance each time.
+  sl.registerFactory<VideoChatBloc>(() => VideoChatBloc(
+    connectUsecase: sl(),
+    disconnectUsecase: sl(),
+    getLocalUserStreamUsecase: sl(),
+    getRemoteUserStreamUsecase: sl(),
+  ));
 
 }
 

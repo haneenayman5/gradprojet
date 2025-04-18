@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled3/features/home/presentation/bloc/chat_home_bloc.dart';
+import 'package:untitled3/features/video_home/presentation/bloc/chat_home_bloc.dart';
+import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_bloc.dart';
 import 'package:untitled3/injection_container.dart';
 import 'features/auth/presentation/bloc/auth/sign_in/sign_in_bloc.dart';
 import 'features/auth/presentation/bloc/auth/sign_up/sign_up_bloc.dart';
@@ -27,6 +28,9 @@ Future<void> main() async {
           ),
           BlocProvider<ChatHomeBloc>(
               create: (_) => locator<ChatHomeBloc>()
+          ),
+          BlocProvider<VideoChatBloc>(
+              create: (_) => locator<VideoChatBloc>()
           ),
           // Add other BlocProviders here if needed.
           ChangeNotifierProvider<LanguageProvider>(

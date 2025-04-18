@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/core/util/styles.dart';
-import 'package:untitled3/features/home/presentation/views/widgets/story_item.dart';
+import 'package:untitled3/features/video_home/presentation/views/widgets/story_item.dart';
 
 class AllUsersItem extends StatelessWidget {
   const AllUsersItem({super.key, required this.name});
