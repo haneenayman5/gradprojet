@@ -15,7 +15,7 @@ class StoryItem extends StatelessWidget {
           radius: size ?? 30,
           child: CircleAvatar(
             radius: sizeImage ?? 27,
-            backgroundColor: Colors.amber,
+            backgroundColor: Colors.blue,
           ),
         ));
   }

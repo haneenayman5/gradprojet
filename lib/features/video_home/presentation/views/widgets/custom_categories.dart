@@ -20,8 +20,8 @@ class CustomCategories extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 CustomCategory(
-                  title: 'Messages',
-                  width: 110,
+                  title: 'Coversations',
+                  width: 120,
                   backgroundColor:
                       state is CategoriesIndex1 ? kContainerColor : kPrimarycolor,
                   textColor:
@@ -34,7 +34,7 @@ class CustomCategories extends StatelessWidget {
                         index3Selected: false);
                   },
                 ),
-                
+
                 CustomCategory(
                   width: 90,
                   title: 'Unread ',
@@ -50,7 +50,7 @@ class CustomCategories extends StatelessWidget {
                         index3Selected: false);
                   },
                 ),
-                 
+
                 CustomCategory(
                     width: 70,
                     title: 'Calls',
@@ -66,7 +66,7 @@ class CustomCategories extends StatelessWidget {
                           index4Selected: false,
                           index3Selected: true);
                     }),
-                     
+
                 CustomCategory(
                     width: 100,
                     title: 'Learning',

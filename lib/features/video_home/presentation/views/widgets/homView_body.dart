@@ -26,7 +26,7 @@ class HomeviewBody extends StatelessWidget {
             ],
           ),
         ),
-        
+
         SliverList(
           delegate:SliverChildListDelegate([ Padding(
             padding: const EdgeInsets.only(top: 20),
@@ -44,7 +44,7 @@ class HomeviewBody extends StatelessWidget {
                       notify: 0,
                     );
                   } else if (state is CategoriesIndex2) {
-                     return const MessagesListview(
+                    return const MessagesListview(
                       notify: 6,
                     );
                   } else if(state is CategoriesIndex3) {
