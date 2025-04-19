@@ -7,9 +7,9 @@ import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/core/util/styles.dart';
 import 'package:untitled3/core/util/widgets/custom_iconButton.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/story_item.dart';
-import 'package:untitled3/features/home/presentation/bloc/chat_home_bloc.dart';
-import 'package:untitled3/features/home/presentation/bloc/chat_home_events.dart';
-import 'package:untitled3/features/home/presentation/views/widgets/story_item.dart';
+import 'package:untitled3/features/video_home/presentation/bloc/chat_home_bloc.dart';
+import 'package:untitled3/features/video_home/presentation/bloc/chat_home_events.dart';
+import 'package:untitled3/features/video_home/presentation/views/widgets/story_item.dart';
 
 class MessageItem extends StatelessWidget {
   const MessageItem({
@@ -98,23 +98,10 @@ class MessageItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    _formatMessageTime(lastMessageTime, now),
+                    DateFormat('h:mm').format(lastMessageTime),
                     style: Styles.textStyle16,
                   ),
                   notification(),
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        DateFormat('h:mm').format(lastMessageTime),
-                        style: Styles.textStyle16,
-                      ),
-                      notification(),
-                    ],
-                  ),
                   const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.videocam_rounded),
@@ -132,6 +119,7 @@ class MessageItem extends StatelessWidget {
                   ),
                 ],
               ),
+
             ),
             Divider(
               color: kContainerColor,

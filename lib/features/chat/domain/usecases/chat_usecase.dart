@@ -18,7 +18,7 @@ class ChatUseCase {
 
   Future<List<ChatMessageEntity>> loadMessages(String sender, String receiver) async {
     final messages = await chatRepository.loadMessages(sender, receiver);
-    messages.sort((a, b) => a.time.compareTo(b.time));
+    messages.sort((a, b) => b.time.compareTo(a.time));
     return messages;
 
   }
