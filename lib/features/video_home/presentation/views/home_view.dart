@@ -23,9 +23,9 @@ class HomeView extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           backgroundColor: kPrimarycolor,
           onPressed: (){
-          GoRouter.of(context).push(AppRoute.kSearchPath);
-        },
-        child: const Icon(Icons.add_comment_rounded,color: Colors.white,),),
+            GoRouter.of(context).push(AppRoute.kSearchPath);
+          },
+          child: const Icon(Icons.add_comment_rounded,color: Colors.white,),),
         body: const HomeviewBody(),
       ),
     );

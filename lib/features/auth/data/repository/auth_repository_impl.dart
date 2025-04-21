@@ -16,20 +16,30 @@ class AuthRepositoryImpl extends AuthRepository {
 
   @override
   Future<UserTokenEntity> signIn(String username, String password) async {
-    LoginRequest data = LoginRequest(username: username.trim(), password: password);
-    final response = await apiService.login(data);
+    try {
+      LoginRequest data = LoginRequest(username: username.trim(), password: password);
+      final response = await apiService.login(data);
 
-    if(response.data.token.isNotEmpty)
-    {
-       await secureStorage.saveToken(response.data.token);
-       await secureStorage.saveUsername(username);
-       return response.data;
-    }
-    else
-      {
-        throw Exception(response.response.statusMessage ?? "Sign-In Failed");
+      if (response.response.statusCode == 200 && response.data.token.isNotEmpty) {
+        await secureStorage.saveToken(response.data.token);
+        await secureStorage.saveUsername(username);
+        return response.data;
+      } else if (response.response.statusCode == 401) {
+        throw Exception("Wrong username or password");
+      } else {
+        throw Exception("Unexpected server response: ${response.response.statusCode}");
       }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw Exception("Wrong username or password");
+      }
+      rethrow;
+    } catch (e) {
+      throw Exception("Unknown error during sign-in: $e");
+    }
   }
+
+
 
   @override
   Future<Response<dynamic>> signUp(String username, String password, String firstName, String lastName, DateTime dateOfBirth, String email) async {

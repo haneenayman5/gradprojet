@@ -1,4 +1,3 @@
-
 import 'package:go_router/go_router.dart';
 import 'package:untitled3/features/auth/presentation/pages/ForgotPasswordScreen.dart';
 import 'package:untitled3/features/auth/presentation/pages/sign_in_screen.dart';
@@ -9,6 +8,7 @@ import 'package:untitled3/features/chat/presentation/views/chat_view.dart';
 import 'package:untitled3/features/video_home/presentation/views/home_view.dart';
 import 'package:untitled3/features/search/presentation/views/search_view.dart';
 import 'package:untitled3/features/video_chat/presentation/pages/VideoChatTest.dart';
+import 'package:untitled3/features/video_home/presentation/views/widgets/help_screen.dart'; // NEW
 
 abstract class AppRoute {
   static String welcomePath = '/';
@@ -16,10 +16,11 @@ abstract class AppRoute {
   static String kChatPath = '/ChatView';
   static String kSearchPath = '/SearchView';
   static String signInPath = '/signin';
-  static String signUpPath =  '/signup';
+  static String signUpPath = '/signup';
   static String forgetPasswordPath = '/forgot_password';
   static String chatTestPath = '/chat_test';
   static String videoChatTestPath = '/video_test';
+  static String helpPath = '/help'; // NEW
 
   static final router = GoRouter(routes: [
     GoRoute(
@@ -39,7 +40,7 @@ abstract class AppRoute {
         return ChatView(senderId: senderId, receiverId: receiverId);
       },
     ),
-     GoRoute(
+    GoRoute(
       path: kSearchPath,
       builder: (context, state) => const SearchView(),
     ),
@@ -66,8 +67,13 @@ abstract class AppRoute {
         final username1 = extra['username1'] as String;
         final username2 = extra['username2'] as String;
         return VideoChatTestPage(username1: username1, username2: username2);
-      }
+      },
     ),
-
+    GoRoute(
+      path: helpPath,
+      builder: (context, state) => const HelpScreen(),
+    ),
   ]);
 }
+
+

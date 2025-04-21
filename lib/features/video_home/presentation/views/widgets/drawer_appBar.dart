@@ -14,7 +14,7 @@ class DrawerAppbar extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                 Scaffold.of(context).closeEndDrawer();
+                Scaffold.of(context).closeEndDrawer();
               },
               icon: const Icon(
                 Icons.arrow_back_ios_rounded,
