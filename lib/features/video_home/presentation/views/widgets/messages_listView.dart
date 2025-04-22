@@ -16,7 +16,6 @@ class MessagesListview extends StatefulWidget {
 }
 
 class _MessagesListviewState extends State<MessagesListview> {
-  late List<ConversationEntity> _conversations = <ConversationEntity>[];
   late String senderId;
 
   late ChatHomeBloc bloc;
@@ -27,6 +26,7 @@ class _MessagesListviewState extends State<MessagesListview> {
     bloc = BlocProvider.of<ChatHomeBloc>(context);
 
     bloc.add(ChatHomeLoadConversation());
+    print("message list view initializing......");
   }
 
   @override

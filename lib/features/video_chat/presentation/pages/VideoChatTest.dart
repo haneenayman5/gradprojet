@@ -39,6 +39,7 @@ class _VideoChatTestPageState extends State<VideoChatTestPage> {
   @override
   void dispose() {
     super.dispose();
+    print("disposeddddddddddddd");
   }
 
   @override
@@ -56,6 +57,10 @@ class _VideoChatTestPageState extends State<VideoChatTestPage> {
           }
         },
         builder: (context, state) {
+          print("the state issssssssssssssssssss: $state");
+          if (state is VideoChatInitial) {
+            return const Center(child: Text("Initializing..."));
+          }
           if (state is VideoChatConnecting) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is VideoChatShowRemoteUser) {
@@ -135,9 +140,15 @@ class _VideoChatTestPageState extends State<VideoChatTestPage> {
             );
           } else if (state is VideoChatConnectionFailed) {
             return Center(child: Text("Error: ${state.exception.toString()}"));
+          } else if (state is VideoChatRemoteUserLeft) {
+            return const Center(
+              child: Text(
+                "No one is here, yet.",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            );
           }
-          // For any other state (or uninitialized state), show a placeholder.
-          return const Center(child: Text("Initializing..."));
+          return const Center(child: Text("Initializing...klasdfbnasdfbhjklasdfhjklsdfajkhlsdfahjkl;sdfahjkl;asdfhjkl "));
         },
       ),
     );

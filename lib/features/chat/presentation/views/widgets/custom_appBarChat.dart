@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:untitled3/core/util/app_route.dart';
 import '../../../../../core/constants/constants.dart';
 import 'package:untitled3/core/util/styles.dart';
 import 'package:untitled3/core/util/widgets/custom_iconButton.dart';
@@ -18,6 +20,7 @@ class CustomAppbarChat extends StatelessWidget {
       child: IconButton(
         onPressed: () {
           Navigator.pop(context);
+          GoRouter.of(context).push(AppRoute.homePath);
         },
         icon: const Icon(Icons.arrow_back),
         color: Colors.blue,

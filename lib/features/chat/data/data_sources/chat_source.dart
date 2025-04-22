@@ -52,17 +52,29 @@ class ChatService {
 
   void sendMessage(ChatMessageModel message) {
     _hubConnection.invoke('SendMessage', args: [message.sender, message.receiver, message.message]);
+    print("Timeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee: ${message.time.toString()}");
   }
 
-  void onMessageReceived(Function(ChatMessageModel) callback) {
-    _hubConnection.on('ReceiveMessage', (arguments) {
-      String sender = arguments![0] as String;
-      String receiver = arguments[1] as String;
-      String message = arguments[2] as String;
-      final ChatMessageModel messageModel = ChatMessageModel(sender: sender, receiver: receiver, message: message, time: DateTime.now());
-      callback(messageModel);
+  /// Registers a listener for incoming messages.
+  void onMessageReceived(void Function(ChatMessageModel) callback) {
+    _hubConnection.on('ReceiveMessage', (List<Object?>? args) {
+      if (args == null || args.length < 4) throw Exception("Message received with wrong formatting");
+
+      final sender   = args[0] as String;
+      final receiver = args[1] as String;
+      final content  = args[2] as String;
+      final rawTime  = args[3] as String;
+      final time     = DateTime.parse(rawTime).toLocal();
+
+      callback(ChatMessageModel(
+        sender:   sender,
+        receiver: receiver,
+        message:  content,
+        time:     time,
+      ));
     });
   }
+
 
   Future<List<ChatMessageModel>> loadMessages(String senderId, String receiverId) async {
     // Ensure connection is established before invoking the method.

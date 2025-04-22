@@ -22,8 +22,9 @@ class VideoChatBloc extends Bloc<VideoChatEvent, VideoChatState> {
       emit(VideoChatConnecting());
 
       try {
-        engine ??= await connectUsecase.call(event.channelName, 0);
-        await getLocalUserStreamUsecase.call().first;
+        print("before calling connectUsecase");
+        engine = await connectUsecase.call(event.channelName, 0);
+        print("after calling connectUsecase");
         emit(VideoChatConnected(engine: engine!));
       }
       catch(e) {
@@ -46,8 +47,16 @@ class VideoChatBloc extends Bloc<VideoChatEvent, VideoChatState> {
       emit(VideoChatShowRemoteUser(remoteUid: event.remoteUid, engine: engine!));
     });
 
+    on<VideoChatRemoteUserDisconnected>((event, emit) async {
+      emit(VideoChatRemoteUserLeft());
+    });
+
     getRemoteUserStreamUsecase.call().listen((data) {
-      add(VideoChatRemoteUserJoined(remoteUid: data!));
+      if(data == null) {
+        add(VideoChatRemoteUserDisconnected());
+      } else {
+        add(VideoChatRemoteUserJoined(remoteUid: data));
+      }
     });
   }
 }

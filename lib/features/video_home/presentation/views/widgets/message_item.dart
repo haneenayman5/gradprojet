@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/core/util/styles.dart';
 import 'package:untitled3/core/util/widgets/custom_iconButton.dart';
+import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_states.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/story_item.dart';
+
+import '../../../../video_chat/domain/utils/channel_name_generator.dart';
+import '../../../../video_chat/presentation/bloc/video_chat_bloc.dart';
+import '../../../../video_chat/presentation/bloc/video_chat_events.dart';
 
 class MessageItem extends StatelessWidget {
   const MessageItem({
@@ -66,10 +72,12 @@ class MessageItem extends StatelessWidget {
           children: [
             ListTile(
               onTap: () {
-                GoRouter.of(context).push(AppRoute.kChatPath, extra: {
+                GoRouter.of(context).push(AppRoute.kChatPath,
+                  extra: {
                   'senderId': senderId,
                   'receiverId': receiverId,
-                });
+                },
+                );
               },
               leading: const StoryItem(
                 size: 40,

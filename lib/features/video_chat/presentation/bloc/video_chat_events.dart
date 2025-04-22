@@ -24,3 +24,5 @@ class VideoChatRemoteUserJoined extends VideoChatEvent {
   @override
   List<Object?> get props => [remoteUid];
 }
+
+class VideoChatRemoteUserDisconnected extends VideoChatEvent {}

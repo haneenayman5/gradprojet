@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AgoraVideoChatRepository implements VideoChatRepository {
-  late final RtcEngine _engine;
+  RtcEngine? _engine;
   final _remoteUserStreamController = StreamController<int?>.broadcast();
   final _localUserStreamController = StreamController<int?>.broadcast();
   final AgoraService agoraService;
@@ -24,18 +24,18 @@ class AgoraVideoChatRepository implements VideoChatRepository {
   @override
   Future<RtcEngine> initializeSDK() async{
     _engine = createAgoraRtcEngine();
-    await _engine.initialize(const RtcEngineContext(
+    await _engine!.initialize(const RtcEngineContext(
       appId: "550b081e687947dd9d793b39b7683759",
       channelProfile: ChannelProfileType.channelProfileCommunication,
     ));
 
-    return _engine;
+    return _engine!;
   }
 
   @override
   Future<void> joinChannel(String channel, int   uid) async{
     String token = await getChatToken(channel);
-    await _engine.joinChannel(
+    await _engine!.joinChannel(
       token: token,
       channelId: channel,
       options: const ChannelMediaOptions(
@@ -52,7 +52,7 @@ class AgoraVideoChatRepository implements VideoChatRepository {
 
   @override
   void setupEventHandlers(){
-    _engine.registerEventHandler(
+    _engine!.registerEventHandler(
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           debugPrint("Local user ${connection.localUid} joined");
@@ -73,14 +73,14 @@ class AgoraVideoChatRepository implements VideoChatRepository {
   @override
   Future<void> setupLocalVideo() async{
     // The video module and preview are disabled by default.
-    await _engine.enableVideo();
-    await _engine.startPreview();
+    await _engine!.enableVideo();
+    await _engine!.startPreview();
   }
 
   @override
   Future<void> cleanupEngine() async{
-    await _engine.leaveChannel();
-    await _engine.release();
+    await _engine!.leaveChannel();
+    await _engine!.release();
   }
 
   @override

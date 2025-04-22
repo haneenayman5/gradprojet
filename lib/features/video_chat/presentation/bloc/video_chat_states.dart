@@ -50,3 +50,5 @@ class VideoChatShowRemoteUser extends VideoChatState {
   @override
   List<Object?> get props => [remoteUid];
 }
+
+class VideoChatRemoteUserLeft extends VideoChatState {}
