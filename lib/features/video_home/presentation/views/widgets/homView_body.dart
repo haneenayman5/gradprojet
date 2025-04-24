@@ -8,7 +8,7 @@ import 'package:untitled3/features/video_home/presentation/views/widgets/message
 import 'package:untitled3/features/video_home/presentation/views/widgets/show_stories_listview.dart';
 
 class HomeviewBody extends StatelessWidget {
-  const HomeviewBody({super.key});
+  const HomeviewBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +16,7 @@ class HomeviewBody extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       shrinkWrap: true,
       slivers: [
+        // Top bar + stories + categories
         const SliverToBoxAdapter(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,38 +28,40 @@ class HomeviewBody extends StatelessWidget {
           ),
         ),
 
+        // The messages / calls list below
         SliverList(
-          delegate:SliverChildListDelegate([ Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30)),
+          delegate: SliverChildListDelegate(
+            [
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: BlocBuilder<SelectCategoryCubit, SelectCategoryState>(
+                    builder: (context, state) {
+                      if (state is CategoriesIndex1) {
+                        return const MessagesListview(notify: 0);
+                      } else if (state is CategoriesIndex2) {
+                        return const MessagesListview(notify: 6);
+                      } else if (state is CategoriesIndex3) {
+                        return const CallsListview();
+                      } else {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                        );
+                      }
+                    },
+                  ),
+                ),
               ),
-              child: BlocBuilder<SelectCategoryCubit, SelectCategoryState>(
-                builder: (context, state) {
-                  if (state is CategoriesIndex1) {
-                    return const MessagesListview(
-                      notify: 0,
-                    );
-                  } else if (state is CategoriesIndex2) {
-                    return const MessagesListview(
-                      notify: 6,
-                    );
-                  } else if(state is CategoriesIndex3) {
-                    return const CallsListview();
-                  }else{
-                    return  SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                    );
-                  }
-                },
-              ),
-            ),
-          ),]),
-        )
+            ],
+          ),
+        ),
       ],
     );
   }

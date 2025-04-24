@@ -1,6 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:go_router/go_router.dart';
-import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/story_item.dart';
 
 class StoriesListview extends StatelessWidget {
@@ -33,7 +31,6 @@ class StoriesListview extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
               onTap: () {
-                GoRouter.of(context).push(AppRoute.kChatPath,extra: names[index]);
               },
               child: const StoryItem());
         },

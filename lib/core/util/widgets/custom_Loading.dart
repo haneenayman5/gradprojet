@@ -9,12 +9,13 @@ class CustomLoading extends StatelessWidget {
     return SizedBox(
       height: double.maxFinite,
       child: ListView.builder(
-          padding: EdgeInsets.zero,
-          physics: const BouncingScrollPhysics(),
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return const Cardloading();
-          }),
+        padding: EdgeInsets.zero,
+        physics: const BouncingScrollPhysics(),
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return const Cardloading();
+        },
+      ),
     );
   }
 }

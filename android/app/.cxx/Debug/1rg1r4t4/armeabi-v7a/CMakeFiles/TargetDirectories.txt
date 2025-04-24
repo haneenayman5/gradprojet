@@ -1,0 +1,2 @@
+G:/Work/Chat App GradProject/gradprojet/android/app/.cxx/Debug/1rg1r4t4/armeabi-v7a/CMakeFiles/edit_cache.dir
+G:/Work/Chat App GradProject/gradprojet/android/app/.cxx/Debug/1rg1r4t4/armeabi-v7a/CMakeFiles/rebuild_cache.dir

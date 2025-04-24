@@ -21,11 +21,12 @@ class CustomCategories extends StatelessWidget {
               children: [
                 CustomCategory(
                   title: 'Coversations',
-                  width: 120,
-                  backgroundColor:
-                      state is CategoriesIndex1 ? kContainerColor : kPrimarycolor,
-                  textColor:
-                      state is CategoriesIndex1 ? Colors.white : Colors.grey,
+                  width: 150,
+                  backgroundColor: state is CategoriesIndex1
+                      ? kContainerColor
+                      : kPrimarycolor,
+                  textColor: Colors.white,
+                  // state is CategoriesIndex1 ? Colors.white : Colors.grey,
                   onTap: () {
                     BlocProvider.of<SelectCategoryCubit>(context).getCategories(
                         index1Selected: true,
@@ -34,14 +35,15 @@ class CustomCategories extends StatelessWidget {
                         index3Selected: false);
                   },
                 ),
-
+                const SizedBox(width: 10),
                 CustomCategory(
                   width: 90,
                   title: 'Unread ',
-                  textColor:
-                      state is CategoriesIndex2 ? Colors.white : Colors.grey,
-                  backgroundColor:
-                      state is CategoriesIndex2 ? kContainerColor : kPrimarycolor,
+                  textColor: Colors.white,
+                  // state is CategoriesIndex2 ? Colors.white : Colors.grey,
+                  backgroundColor: state is CategoriesIndex2
+                      ? kContainerColor
+                      : kPrimarycolor,
                   onTap: () {
                     BlocProvider.of<SelectCategoryCubit>(context).getCategories(
                         index1Selected: false,
@@ -50,38 +52,40 @@ class CustomCategories extends StatelessWidget {
                         index3Selected: false);
                   },
                 ),
-
+                const SizedBox(width: 10),
                 CustomCategory(
-                    width: 70,
-                    title: 'Calls',
-                    textColor:
-                        state is CategoriesIndex3 ? Colors.white : Colors.grey,
-                    backgroundColor: state is CategoriesIndex3
-                        ? kContainerColor
-                        : kPrimarycolor,
-                    onTap: () {
-                      BlocProvider.of<SelectCategoryCubit>(context).getCategories(
-                          index1Selected: false,
-                          index2Selected: false,
-                          index4Selected: false,
-                          index3Selected: true);
-                    }),
-
+                  width: 70,
+                  title: 'Calls',
+                  textColor: Colors.white,
+                  // state is CategoriesIndex3 ? Colors.white : Colors.grey,
+                  backgroundColor: state is CategoriesIndex3
+                      ? kContainerColor
+                      : kPrimarycolor,
+                  onTap: () {
+                    BlocProvider.of<SelectCategoryCubit>(context).getCategories(
+                        index1Selected: false,
+                        index2Selected: false,
+                        index4Selected: false,
+                        index3Selected: true);
+                  },
+                ),
+                const SizedBox(width: 10),
                 CustomCategory(
-                    width: 100,
-                    title: 'Learning',
-                    textColor:
-                        state is CategoriesIndex4 ? Colors.white : Colors.grey,
-                    backgroundColor: state is CategoriesIndex4
-                        ? kContainerColor
-                        : kPrimarycolor,
-                    onTap: () {
-                      BlocProvider.of<SelectCategoryCubit>(context).getCategories(
-                          index1Selected: false,
-                          index2Selected: false,
-                          index3Selected: false,
-                          index4Selected: true);
-                    }),
+                  width: 100,
+                  title: 'Learning',
+                  textColor: Colors.white,
+                  // state is CategoriesIndex4 ? Colors.white : Colors.grey,
+                  backgroundColor: state is CategoriesIndex4
+                      ? kContainerColor
+                      : kPrimarycolor,
+                  onTap: () {
+                    BlocProvider.of<SelectCategoryCubit>(context).getCategories(
+                        index1Selected: false,
+                        index2Selected: false,
+                        index3Selected: false,
+                        index4Selected: true);
+                  },
+                ),
               ],
             ),
           );

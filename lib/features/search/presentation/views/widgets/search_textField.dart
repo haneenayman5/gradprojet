@@ -32,13 +32,10 @@ class _SearchTextfieldState extends State<SearchTextfield> {
           child: IconButton(
             onPressed: () {
               controller.clear();
-             
             },
             icon: const Icon(
               Icons.clear_all_rounded,
               color: Colors.black,
-
-             
             ),
           ),
         ),
