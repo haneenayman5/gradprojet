@@ -16,7 +16,7 @@ abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
   @GET('/User/GetUser/{username}')
-  Future<HttpResponse<UserModel>> getUser(String username);
+  Future<HttpResponse<UserModel>> getUser(@Path('username') String username);
 
   @GET('/User/GetUsers')
   Future<HttpResponse<List<UserModel>>> getUsers();

@@ -70,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
     BlocProvider.of<SignInBloc>(context).add(
       SignInRequested(
         username: _usernameController.text.trim(),
-        password: _passwordController.text.trim(),
+        password: _passwordController.text,
       ),
     );
   }
@@ -112,8 +112,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 style: TextStyle(fontSize: textFieldFontSize),
                 decoration: InputDecoration(
                   labelText: languageProvider.translate('Username'),
-                  labelStyle:
-                  TextStyle(fontSize: textFieldFontSize, color: Colors.blue),
+                  labelStyle: TextStyle(fontSize: textFieldFontSize, color: Colors.blue),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
@@ -126,8 +125,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 style: TextStyle(fontSize: textFieldFontSize),
                 decoration: InputDecoration(
                   labelText: languageProvider.translate('Password'),
-                  labelStyle:
-                  TextStyle(fontSize: textFieldFontSize, color: Colors.blue),
+                  labelStyle: TextStyle(fontSize: textFieldFontSize, color: Colors.blue),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
@@ -152,7 +150,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     );
                     context.go(AppRoute.homePath);
                   } else if (state is SignInFailure) {
-                    _showError(languageProvider.translate('Wrong Username or Password'));
+                    if (state.message.contains('Wrong Username or Password')) {
+                      _showError(languageProvider.translate('Wrong Username or Password'));
+                    } else {
+                      _showError(languageProvider.translate('Wrong Username or Password'));
+                    }
                   }
                 },
                 builder: (context, state) {
@@ -189,9 +191,11 @@ class _SignInScreenState extends State<SignInScreen> {
                   style: TextStyle(fontSize: descriptionFontSize, color: Colors.blue),
                 ),
               ),
+
+              // ✅ Updated Sign Up Button Here
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
+                  context.go(AppRoute.signUpPath);
                 },
                 child: Text(
                   languageProvider.translate('noAccount'),
@@ -223,6 +227,9 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 }
+
+
+
 
 
 

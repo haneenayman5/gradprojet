@@ -3,7 +3,14 @@ import 'package:untitled3/core/util/styles.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/story_item.dart';
 
 class DrawerAppbar extends StatelessWidget {
-  const DrawerAppbar({super.key});
+  final String name;
+  final String email;
+
+  const DrawerAppbar({
+    super.key,
+    required this.name,
+    required this.email,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,39 +28,28 @@ class DrawerAppbar extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            const Spacer(
-              flex: 1,
-            ),
+            const Spacer(flex: 1),
             Text(
               'Settings',
               style: Styles.textStyle18.copyWith(color: Colors.white),
             ),
-            const Spacer(
-              flex: 2,
-            )
+            const Spacer(flex: 2),
           ],
         ),
-        const SizedBox(
-          height: 25,
-        ),
+        const SizedBox(height: 25),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             const StoryItem(),
-            const Spacer(
-              flex: 1,
-            ),
-            Text('Tom Brenan',
-                style: Styles.textStyle18.copyWith(color: Colors.white)),
-            const Spacer(
-              flex: 2,
-            ),
+            const Spacer(flex: 1),
+            Text(name, style: Styles.textStyle18.copyWith(color: Colors.white)),
+            const Spacer(flex: 2),
           ],
         ),
-        const SizedBox(
-          height: 25,
-        ),
+        const SizedBox(height: 25),
       ],
     );
   }
 }
+
+
