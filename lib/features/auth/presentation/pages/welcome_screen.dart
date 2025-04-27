@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';  // Correct import for fluttertoast
+import 'package:fluttertoast/fluttertoast.dart'; // Correct import for fluttertoast
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled3/core/util/app_route.dart';
@@ -19,7 +19,7 @@ class WelcomeScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.blue, Colors.white],  // Adjust gradient as needed
+            colors: [Colors.blue, Colors.white], // Adjust gradient as needed
           ),
         ),
         child: Center(
@@ -47,7 +47,7 @@ class WelcomeScreen extends StatelessWidget {
                   t('welcome'),
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 45,  // Increased font size
+                    fontSize: 45, // Increased font size
                     fontWeight: FontWeight.bold,
                     color: Colors.blue,
                   ),
@@ -71,38 +71,22 @@ class WelcomeScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     // _handleNavigation(context, '/signup', t);
-                    //     GoRouter.of(context).push(AppRoute.videoChatTestPath);
-                    //   },
-                    //   style: ElevatedButton.styleFrom(
-                    //     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),  // Adjust button width and height
-                    //     backgroundColor: Colors.blue,  // Button background color
-                    //     minimumSize: Size(150, 60),  // Set minimum size for width and height
-                    //   ),
-                    //   child: Text(
-                    //     t('videoChat'),
-                    //     style: TextStyle(
-                    //       color: Colors.white,  // Change text color
-                    //       fontSize: 20,  // Adjust font size
-                    //     ),
-                    //   ),
-                    // ),
                     ElevatedButton(
                       onPressed: () {
-                        _handleNavigation(context, '/signup', t);
+                        _handleNavigation(context, AppRoute.signUpPath, t);
                       },
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),  // Adjust button width and height
-                        backgroundColor: Colors.blue,  // Button background color
-                        minimumSize: Size(150, 60),  // Set minimum size for width and height
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 16), // Adjust button width and height
+                        backgroundColor: Colors.blue, // Button background color
+                        minimumSize:
+                        Size(150, 60), // Set minimum size for width and height
                       ),
                       child: Text(
                         t('signUp'),
                         style: TextStyle(
-                          color: Colors.white,  // Change text color
-                          fontSize: 20,  // Adjust font size
+                          color: Colors.white, // Change text color
+                          fontSize: 20, // Adjust font size
                         ),
                       ),
                     ),
@@ -112,15 +96,17 @@ class WelcomeScreen extends StatelessWidget {
                         context.go(AppRoute.signInPath);
                       },
                       style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),  // Adjust button width and height
-                        side: BorderSide(color: Colors.blue),  // Border color
-                        minimumSize: Size(150, 60),  // Set minimum size for width and height
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 16), // Adjust button width and height
+                        side: BorderSide(color: Colors.blue), // Border color
+                        minimumSize:
+                        Size(150, 60), // Set minimum size for width and height
                       ),
                       child: Text(
                         t('signIn'),
                         style: TextStyle(
-                          color: Colors.blue,  // Change text color
-                          fontSize: 20,  // Adjust font size
+                          color: Colors.blue, // Change text color
+                          fontSize: 20, // Adjust font size
                         ),
                       ),
                     ),
@@ -137,7 +123,7 @@ class WelcomeScreen extends StatelessWidget {
                     languageProvider.language == 'en'
                         ? t('switchToArabic')
                         : t('switchToEnglish'),
-                    style: TextStyle(color: Colors.grey[600], fontSize: 20),  // Adjust font size
+                    style: TextStyle(color: Colors.grey[600], fontSize: 20),
                   ),
                 ),
               ],
@@ -149,9 +135,8 @@ class WelcomeScreen extends StatelessWidget {
   }
 
   void _handleNavigation(BuildContext context, String path, Function t) {
-    String toastMessage = path == '/signup'
-        ? t('creatingAccount')
-        : t('accessingAccount');
+    String toastMessage =
+    path == AppRoute.signUpPath ? t('creatingAccount') : t('accessingAccount');
 
     Fluttertoast.showToast(
       msg: toastMessage,
@@ -163,7 +148,7 @@ class WelcomeScreen extends StatelessWidget {
       fontSize: 16.0,
     );
 
-    Navigator.pushNamed(context, path);  // Navigate to the respective screen
+    context.push(path); // Navigate using GoRouter
   }
 }
 

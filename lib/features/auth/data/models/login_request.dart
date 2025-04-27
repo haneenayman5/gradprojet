@@ -12,3 +12,4 @@ class LoginRequest {
     'password': password
   };
 }
+

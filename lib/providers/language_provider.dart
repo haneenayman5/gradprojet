@@ -39,6 +39,7 @@ class LanguageProvider extends ChangeNotifier {
         'rememberPassword': 'Remembered your password? Sign In',
         'switchToArabic': 'عربي',
         'switchToEnglish': 'English',
+        'wrongCredentials': 'Incorrect username or password',  // ✅ Added key
       },
       'ar': {
         'welcome': 'مرحباً بكم في SignChat',
@@ -60,6 +61,7 @@ class LanguageProvider extends ChangeNotifier {
         'rememberPassword': 'تذكرت كلمة المرور؟ تسجيل الدخول',
         'switchToArabic': 'عربي',
         'switchToEnglish': 'English',
+        'wrongCredentials': 'اسم المستخدم أو كلمة المرور غير صحيحة', // ✅ Added key
       },
     };
 
