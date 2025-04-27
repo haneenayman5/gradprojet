@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:untitled3/features/chat/presentation/views/widgets/chatView_body.dart';
+
+import '../../../../core/util/app_route.dart';
 
 class ChatView extends StatelessWidget {
   final String senderId;
@@ -8,8 +11,16 @@ class ChatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: ChatviewBody(senderId: senderId, receiverId: receiverId,),
-    );
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) {
+          // navigate to home
+          GoRouter.of(context).push(AppRoute.homePath);
+        }
+      },
+      child: Scaffold(
+        body: ChatviewBody(senderId: senderId, receiverId: receiverId,),
+      ));
   }
 }
