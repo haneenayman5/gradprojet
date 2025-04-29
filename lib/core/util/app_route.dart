@@ -9,7 +9,9 @@ import 'package:untitled3/features/video_home/presentation/views/home_view.dart'
 import 'package:untitled3/features/search/presentation/views/search_view.dart';
 import 'package:untitled3/features/video_chat/presentation/pages/VideoChatTest.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/help_screen.dart';
-import 'package:untitled3/features/video_home/presentation/views/widgets/account_page.dart'; // ✅ ADD THIS
+import 'package:untitled3/features/video_home/presentation/views/widgets/account_page.dart';
+
+import '../../features/video_home/presentation/views/widgets/TextMagnifierSpeakerScreen.dart'; // ✅ ADD THIS
 
 abstract class AppRoute {
   static String welcomePath = '/';
@@ -23,6 +25,8 @@ abstract class AppRoute {
   static String videoChatTestPath = '/video_test';
   static String helpPath = '/help';
   static String accountPath = '/account'; // ✅ ADD THIS
+  static String magnifierPath = '/magnifier';
+
 
   static final router = GoRouter(
     routes: [
@@ -52,6 +56,11 @@ abstract class AppRoute {
       ),
       GoRoute(path: helpPath, builder: (_, __) => const HelpScreen()),
       GoRoute(path: accountPath, builder: (_, __) => const AccountPage()), // ✅ ADD THIS
+      GoRoute(
+        path: magnifierPath,
+        builder: (_, __) => const TextMagnifierSpeakerScreen(),
+      ),
+
     ],
   );
 }

@@ -7,4 +7,5 @@ class CategoriesIndex1 extends SelectCategoryState {}
 class CategoriesIndex2 extends SelectCategoryState {}
 class CategoriesIndex3 extends SelectCategoryState {}
 class CategoriesIndex4 extends SelectCategoryState {}
+class CategoriesIndex5 extends SelectCategoryState {}
 
