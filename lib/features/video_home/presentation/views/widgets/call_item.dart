@@ -18,6 +18,7 @@ final String name ;
             leading:const  StoryItem(
               size: 40,
               sizeImage: 40,
+              imageUrl: "",
             ),
             title:  Text(
               name,

@@ -43,6 +43,7 @@ class _MessagesListviewState extends State<MessagesListview> {
           var names = state.conversations.map((c) => c.otherUserId).toList();
           var lastMessages = state.conversations.map((c) => c.lastMessage).toList();
           var lastMessagesTimes = state.conversations.map((c) => c.lastMessageTime).toList();
+          var imageUrls = state.conversations.map((c) => c.otherUserPfpUrl).toList();
           return SizedBox(
             height: MediaQuery.of(context).size.height * ((names.length +1 )/10 ) ,
             child: Padding(
@@ -63,6 +64,7 @@ class _MessagesListviewState extends State<MessagesListview> {
                     receiverId: names[index],
                     lastMessage: lastMessages[index],
                     lastMessageTime: lastMessagesTimes[index],
+                    imageUrl: imageUrls[index],
                     notify: widget.notify,
                   );
                 },

@@ -26,4 +26,11 @@ abstract class ApiService {
 
   @POST('/Account/Register')
   Future<HttpResponse> signup(@Body() RegisterRequest data);
+
+  @MultiPart()
+  @POST('/User/UploadAvatar/{username}')
+  Future<HttpResponse> uploadAvatar(
+      @Path("username") String username,
+      @Part(name: "file") File file,
+      );
 }

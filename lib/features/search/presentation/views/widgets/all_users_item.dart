@@ -26,9 +26,10 @@ class AllUsersItem extends StatelessWidget {
           onTap: () {
             GoRouter.of(context).push(AppRoute.kChatPath, extra: name);
           },
-          leading: const StoryItem(
+          leading: StoryItem(
             size: 40,
             sizeImage: 40,
+            imageUrl: name.otherUserPfpUrl,
           ),
           title: Text(
             name.otherUserId,

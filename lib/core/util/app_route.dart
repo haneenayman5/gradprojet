@@ -22,7 +22,7 @@ abstract class AppRoute {
   static String chatTestPath = '/chat_test';
   static String videoChatTestPath = '/video_test';
   static String helpPath = '/help';
-  static String accountPath = '/account'; // ✅ ADD THIS
+  static String accountPath = '/account';
 
   static final router = GoRouter(
     routes: [

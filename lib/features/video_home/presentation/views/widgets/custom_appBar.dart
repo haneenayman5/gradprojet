@@ -31,15 +31,15 @@ class CustomAppBar extends StatelessWidget {
                 const SizedBox(width: 8),
                 // TITLE with blue color
                 Text(
-                  'Chat With \nfriends',
+                  'Chat with \nfriends',
                   style: Styles.textStyle30.copyWith(color: Colors.blue),
                 ),
               ],
             ),
             // MENU BUTTON (modified to blue color)
             CustomIconButton(
-              icon: Icons.menu_rounded,
-              color: Colors.blue, // <-- Set the color to blue
+              icon: Icons.account_circle_rounded,
+              color: Colors.white, // <-- Set the color to blue
               onPressed: () {
                 Scaffold.of(context).openEndDrawer();
               },

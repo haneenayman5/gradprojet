@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/core/util/styles.dart';
 import 'package:untitled3/core/util/widgets/custom_iconButton.dart';
-import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_states.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/story_item.dart';
-
-import '../../../../video_chat/domain/utils/channel_name_generator.dart';
-import '../../../../video_chat/presentation/bloc/video_chat_bloc.dart';
-import '../../../../video_chat/presentation/bloc/video_chat_events.dart';
 
 class MessageItem extends StatelessWidget {
   const MessageItem({
@@ -22,6 +16,7 @@ class MessageItem extends StatelessWidget {
     required this.id,
     required this.lastMessage,
     required this.lastMessageTime,
+    required this.imageUrl,
     this.onDismissed,
   });
 
@@ -29,12 +24,11 @@ class MessageItem extends StatelessWidget {
   final String senderId, receiverId, id;
   final String lastMessage;
   final DateTime lastMessageTime;
+  final String? imageUrl;
   final Function(DismissDirection)? onDismissed;
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: Dismissible(
@@ -79,9 +73,10 @@ class MessageItem extends StatelessWidget {
                 },
                 );
               },
-              leading: const StoryItem(
+              leading: StoryItem(
                 size: 40,
                 sizeImage: 40,
+                imageUrl: imageUrl?? "",
               ),
               title: Text(
                 receiverId,
