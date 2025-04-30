@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/features/video_home/presentation/manager/select_category_cubit/select_category_cubit.dart';
@@ -52,40 +51,40 @@ class CustomCategories extends StatelessWidget {
                         index3Selected: false);
                   },
                 ),
-                const SizedBox(width: 10),
-                CustomCategory(
-                  width: 70,
-                  title: 'Calls',
-                  textColor: Colors.white,
-                  // state is CategoriesIndex3 ? Colors.white : Colors.grey,
-                  backgroundColor: state is CategoriesIndex3
-                      ? kContainerColor
-                      : kPrimarycolor,
-                  onTap: () {
-                    BlocProvider.of<SelectCategoryCubit>(context).getCategories(
-                        index1Selected: false,
-                        index2Selected: false,
-                        index4Selected: false,
-                        index3Selected: true);
-                  },
-                ),
-                const SizedBox(width: 10),
-                CustomCategory(
-                  width: 100,
-                  title: 'Learning',
-                  textColor: Colors.white,
-                  // state is CategoriesIndex4 ? Colors.white : Colors.grey,
-                  backgroundColor: state is CategoriesIndex4
-                      ? kContainerColor
-                      : kPrimarycolor,
-                  onTap: () {
-                    BlocProvider.of<SelectCategoryCubit>(context).getCategories(
-                        index1Selected: false,
-                        index2Selected: false,
-                        index3Selected: false,
-                        index4Selected: true);
-                  },
-                ),
+                // const SizedBox(width: 10),
+                // CustomCategory(
+                //   width: 70,
+                //   title: 'Calls',
+                //   textColor: Colors.white,
+                //   // state is CategoriesIndex3 ? Colors.white : Colors.grey,
+                //   backgroundColor: state is CategoriesIndex3
+                //       ? kContainerColor
+                //       : kPrimarycolor,
+                //   onTap: () {
+                //     BlocProvider.of<SelectCategoryCubit>(context).getCategories(
+                //         index1Selected: false,
+                //         index2Selected: false,
+                //         index4Selected: false,
+                //         index3Selected: true);
+                //   },
+                // ),
+                // const SizedBox(width: 10),
+                // CustomCategory(
+                //   width: 100,
+                //   title: 'Learning',
+                //   textColor: Colors.white,
+                //   // state is CategoriesIndex4 ? Colors.white : Colors.grey,
+                //   backgroundColor: state is CategoriesIndex4
+                //       ? kContainerColor
+                //       : kPrimarycolor,
+                //   onTap: () {
+                //     BlocProvider.of<SelectCategoryCubit>(context).getCategories(
+                //         index1Selected: false,
+                //         index2Selected: false,
+                //         index3Selected: false,
+                //         index4Selected: true);
+                //   },
+                // ),
               ],
             ),
           );

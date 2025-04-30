@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as path;
 import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/core/util/styles.dart';
@@ -32,16 +35,12 @@ class MessageItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: Dismissible(
-        onDismissed: (direction) {
-          if (onDismissed != null) onDismissed!(direction);
-        },
         key: Key(id),
-        secondaryBackground: Container(
-          padding: const EdgeInsets.only(right: 20),
-          alignment: Alignment.centerRight,
-          decoration: const BoxDecoration(
-            color: Colors.white10,
-          ),
+        onDismissed: onDismissed,
+        background: Container(
+          padding: const EdgeInsets.only(left: 30),
+          alignment: Alignment.centerLeft,
+          decoration: const BoxDecoration(color: Colors.white),
           child: const CustomIconButton(
             size: 40,
             iconSize: 25,
@@ -49,12 +48,10 @@ class MessageItem extends StatelessWidget {
             icon: Icons.delete_rounded,
           ),
         ),
-        background: Container(
-          padding: const EdgeInsets.only(left: 30),
-          alignment: Alignment.centerLeft,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
+        secondaryBackground: Container(
+          padding: const EdgeInsets.only(right: 20),
+          alignment: Alignment.centerRight,
+          decoration: const BoxDecoration(color: Colors.white10),
           child: const CustomIconButton(
             size: 40,
             iconSize: 25,
@@ -66,17 +63,18 @@ class MessageItem extends StatelessWidget {
           children: [
             ListTile(
               onTap: () {
-                GoRouter.of(context).push(AppRoute.kChatPath,
+                GoRouter.of(context).push(
+                  AppRoute.kChatPath,
                   extra: {
-                  'senderId': senderId,
-                  'receiverId': receiverId,
-                },
+                    'senderId': senderId,
+                    'receiverId': receiverId,
+                  },
                 );
               },
               leading: StoryItem(
                 size: 40,
                 sizeImage: 40,
-                imageUrl: imageUrl?? "",
+                imageUrl: imageUrl ?? '',
               ),
               title: Text(
                 receiverId,
@@ -91,20 +89,17 @@ class MessageItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: Styles.textStyle16,
               ),
-              trailing: Column(
+              trailing: Row(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    DateFormat('h:mm').format(lastMessageTime),
+                    _formatMessageTime(lastMessageTime, DateTime.now()),
                     style: Styles.textStyle16,
                   ),
-                  notification(),
-                  const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.videocam_rounded),
-                    color: kNotifyColor,
+                    color: Colors.blue,
                     tooltip: 'Start Video Chat',
                     onPressed: () {
                       GoRouter.of(context).push(
@@ -116,21 +111,20 @@ class MessageItem extends StatelessWidget {
                       );
                     },
                   ),
+                  notification(),
                 ],
               ),
-
             ),
             Divider(
               color: kContainerColor,
               indent: 110,
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  /// 📆 Updated to handle local time correctly
   String _formatMessageTime(DateTime messageTime, DateTime now) {
     final localMessageTime = messageTime.toLocal();
     final localNow = now.toLocal();
@@ -138,10 +132,13 @@ class MessageItem extends StatelessWidget {
     final today = DateTime(localNow.year, localNow.month, localNow.day);
     final yesterday = today.subtract(const Duration(days: 1));
     final messageDate = DateTime(
-        localMessageTime.year, localMessageTime.month, localMessageTime.day);
+      localMessageTime.year,
+      localMessageTime.month,
+      localMessageTime.day,
+    );
 
     if (messageDate == today) {
-      return 'Today';
+      return DateFormat('h:mm a').format(localMessageTime); // e.g. 3:45 PM
     } else if (messageDate == yesterday) {
       return 'Yesterday';
     } else {
@@ -150,18 +147,15 @@ class MessageItem extends StatelessWidget {
   }
 
   Widget notification() {
-    if (notify == 0) {
-      return const SizedBox();
-    } else {
-      return Container(
-        height: 25,
-        width: 25,
-        decoration:
-            const BoxDecoration(color: kNotifyColor, shape: BoxShape.circle),
-        child: Center(
-          child: Text('$notify', style: Styles.textStyle14),
-        ),
-      );
-    }
+    if (notify == 0) return const SizedBox();
+    return Container(
+      height: 25,
+      width: 25,
+      decoration:
+      const BoxDecoration(color: kNotifyColor, shape: BoxShape.circle),
+      child: Center(
+        child: Text('$notify', style: Styles.textStyle14),
+      ),
+    );
   }
 }

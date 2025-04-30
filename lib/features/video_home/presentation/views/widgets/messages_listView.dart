@@ -26,7 +26,6 @@ class _MessagesListviewState extends State<MessagesListview> {
     bloc = BlocProvider.of<ChatHomeBloc>(context);
 
     bloc.add(ChatHomeLoadConversation());
-    print("message list view initializing......");
   }
 
   @override
@@ -47,7 +46,7 @@ class _MessagesListviewState extends State<MessagesListview> {
           return SizedBox(
             height: MediaQuery.of(context).size.height * ((names.length +1 )/10 ) ,
             child: Padding(
-              padding: const EdgeInsets.only(top: 45),
+              padding: const EdgeInsets.only(top: 30),
               child: ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
@@ -64,8 +63,8 @@ class _MessagesListviewState extends State<MessagesListview> {
                     receiverId: names[index],
                     lastMessage: lastMessages[index],
                     lastMessageTime: lastMessagesTimes[index],
-                    imageUrl: imageUrls[index],
                     notify: widget.notify,
+                    imageUrl: imageUrls[index],
                   );
                 },
               ),
@@ -79,7 +78,6 @@ class _MessagesListviewState extends State<MessagesListview> {
         //   senderId = state.senderId;
         // }
       },
-
     );
   }
 }
