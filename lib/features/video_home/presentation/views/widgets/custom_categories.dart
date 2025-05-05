@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart'; // ✅ For navigation
 import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/features/video_home/presentation/manager/select_category_cubit/select_category_cubit.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/custom_category.dart';
+import 'package:untitled3/core/util/app_route.dart'; // ✅ Your AppRoute file
 
 class CustomCategories extends StatelessWidget {
   const CustomCategories({super.key});
@@ -20,71 +23,51 @@ class CustomCategories extends StatelessWidget {
               children: [
                 CustomCategory(
                   title: 'Coversations',
-                  width: 150,
-                  backgroundColor: state is CategoriesIndex1
-                      ? kContainerColor
-                      : kPrimarycolor,
-                  textColor: Colors.white,
-                  // state is CategoriesIndex1 ? Colors.white : Colors.grey,
+                  width: 120,
+                  backgroundColor: state is CategoriesIndex1 ? kContainerColor : kPrimarycolor,
+                  textColor: state is CategoriesIndex1 ? Colors.white : Colors.grey,
                   onTap: () {
-                    BlocProvider.of<SelectCategoryCubit>(context).getCategories(
-                        index1Selected: true,
-                        index2Selected: false,
-                        index4Selected: false,
-                        index3Selected: false);
+                    context.read<SelectCategoryCubit>().selectCategory(1);
                   },
                 ),
-                const SizedBox(width: 10),
+
                 CustomCategory(
                   width: 90,
-                  title: 'Unread ',
-                  textColor: Colors.white,
-                  // state is CategoriesIndex2 ? Colors.white : Colors.grey,
-                  backgroundColor: state is CategoriesIndex2
-                      ? kContainerColor
-                      : kPrimarycolor,
+                  title: 'Unread',
+                  textColor: state is CategoriesIndex2 ? Colors.white : Colors.grey,
+                  backgroundColor: state is CategoriesIndex2 ? kContainerColor : kPrimarycolor,
                   onTap: () {
-                    BlocProvider.of<SelectCategoryCubit>(context).getCategories(
-                        index1Selected: false,
-                        index2Selected: true,
-                        index4Selected: false,
-                        index3Selected: false);
+                    context.read<SelectCategoryCubit>().selectCategory(2);
                   },
                 ),
-                // const SizedBox(width: 10),
-                // CustomCategory(
-                //   width: 70,
-                //   title: 'Calls',
-                //   textColor: Colors.white,
-                //   // state is CategoriesIndex3 ? Colors.white : Colors.grey,
-                //   backgroundColor: state is CategoriesIndex3
-                //       ? kContainerColor
-                //       : kPrimarycolor,
-                //   onTap: () {
-                //     BlocProvider.of<SelectCategoryCubit>(context).getCategories(
-                //         index1Selected: false,
-                //         index2Selected: false,
-                //         index4Selected: false,
-                //         index3Selected: true);
-                //   },
-                // ),
-                // const SizedBox(width: 10),
-                // CustomCategory(
-                //   width: 100,
-                //   title: 'Learning',
-                //   textColor: Colors.white,
-                //   // state is CategoriesIndex4 ? Colors.white : Colors.grey,
-                //   backgroundColor: state is CategoriesIndex4
-                //       ? kContainerColor
-                //       : kPrimarycolor,
-                //   onTap: () {
-                //     BlocProvider.of<SelectCategoryCubit>(context).getCategories(
-                //         index1Selected: false,
-                //         index2Selected: false,
-                //         index3Selected: false,
-                //         index4Selected: true);
-                //   },
-                // ),
+                CustomCategory(
+                  width: 70,
+                  title: 'Calls',
+                  textColor: state is CategoriesIndex3 ? Colors.white : Colors.grey,
+                  backgroundColor: state is CategoriesIndex3 ? kContainerColor : kPrimarycolor,
+                  onTap: () {
+                    context.read<SelectCategoryCubit>().selectCategory(3);
+                  },
+                ),
+                CustomCategory(
+                  width: 100,
+                  title: 'Learning',
+                  textColor: state is CategoriesIndex4 ? Colors.white : Colors.grey,
+                  backgroundColor: state is CategoriesIndex4 ? kContainerColor : kPrimarycolor,
+                  onTap: () {
+                    context.read<SelectCategoryCubit>().selectCategory(4);
+                  },
+                ),
+                CustomCategory(
+                  width: 110,
+                  title: 'Magnifier',
+                  textColor: state is CategoriesIndex5 ? Colors.white : Colors.grey,
+                  backgroundColor: state is CategoriesIndex5 ? kContainerColor : kPrimarycolor,
+                  onTap: () {
+                    context.read<SelectCategoryCubit>().selectCategory(5);
+                    context.push(AppRoute.magnifierPath); // ✅ Navigate to Magnifier screen
+                  },
+                ),
               ],
             ),
           );
