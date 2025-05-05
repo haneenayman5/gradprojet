@@ -211,6 +211,15 @@ class _SignInScreenState extends State<SignInScreen> {
                   style: TextStyle(fontSize: descriptionFontSize, color: Colors.blue),
                 ),
               ),
+              TextButton( // todo: REMOVE
+                onPressed: () {
+                  context.go(AppRoute.soundDetection);
+                },
+                child: Text(
+                  "Sound Detection",
+                  style: TextStyle(fontSize: descriptionFontSize, color: Colors.blue),
+                ),
+              ),
             ],
           ),
         ),

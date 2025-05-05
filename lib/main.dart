@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled3/features/sound_detection/presentation/bloc/sound_monitor_cubit.dart';
 import 'package:untitled3/features/video_home/presentation/bloc/chat_home_bloc.dart';
 import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_bloc.dart';
 import 'package:untitled3/injection_container.dart';
@@ -33,6 +34,9 @@ Future<void> main() async {
               create: (_) => locator<VideoChatBloc>()
           ),
           // Add other BlocProviders here if needed.
+          BlocProvider<SoundMonitorCubit>(
+            create: (_) => locator<SoundMonitorCubit>()
+          ),
           ChangeNotifierProvider<LanguageProvider>(
             create: (_) => LanguageProvider(),
           ),

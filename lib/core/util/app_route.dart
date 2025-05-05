@@ -7,6 +7,7 @@ import 'package:untitled3/features/chat/presentation/pages/chat_screen_testing.d
 import 'package:untitled3/features/chat/presentation/views/chat_view.dart';
 import 'package:untitled3/features/learning/presentation/pages/learning_home.dart';
 import 'package:untitled3/features/learning/presentation/pages/learning_start_screen.dart';
+import 'package:untitled3/features/sound_detection/presentation/pages/sound_monitor_page.dart';
 import 'package:untitled3/features/video_home/presentation/views/home_view.dart';
 import 'package:untitled3/features/search/presentation/views/search_view.dart';
 import 'package:untitled3/features/video_chat/presentation/pages/VideoChatTest.dart';
@@ -26,10 +27,11 @@ abstract class AppRoute {
   static String chatTestPath = '/chat_test';
   static String videoChatTestPath = '/video_test';
   static String helpPath = '/help';
-  static String accountPath = '/account'; // ✅ ADD THIS
+  static String accountPath = '/account';
   static String magnifierPath = '/magnifier';
   static String learningHome = '/learningHome';
   static String learningStart = '/learningStart';
+  static String soundDetection = '/soundDetection';
 
   static final router = GoRouter(
     routes: [
@@ -64,6 +66,10 @@ abstract class AppRoute {
       GoRoute(
         path: magnifierPath,
         builder: (_, __) => const TextMagnifierSpeakerScreen(),
+      ),
+      GoRoute(
+        path: soundDetection,
+        builder: (_, __) => const SoundMonitorPage(),
       ),
 
     ],

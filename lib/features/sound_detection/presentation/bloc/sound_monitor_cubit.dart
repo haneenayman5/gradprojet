@@ -1,35 +1,81 @@
-// import 'package:untitled3/features/sound_detection/domain/repositories/sound_repository.dart';
-//
-// /// Use-case: monitors the ambient sound level in decibels.
-// /// Returns a [Stream] of `double` values representing real-time dB levels.
-// import 'package:bloc/bloc.dart';
-// import 'package:meta/meta.dart';
-// import 'package:untitled3/features/sound_detection/domain/usecases/monitor_sound.dart';
-//
-// part 'sound_monitor_states.dart';
-//
-// /// Cubit that emits real-time decibel levels for the UI gauge.
-// class SoundMonitorCubit extends Cubit<SoundMonitorState> {
-//   final MonitorSound monitorSound;
-//   Stream<double>? _subscription;
-//
-//   SoundMonitorCubit({required this.monitorSound})
-//       : super(SoundMonitorInitial());
-//
-//   /// Starts listening to the decibel stream and emits new states.
-//   void startMonitoring() {
-//     if (_subscription != null) return; // already listening
-//     _subscription = monitorSound.call();
-//     _subscription!.listen(
-//           (db) => emit(SoundMonitorRunning(dbLevel: db)),
-//       onError: (error) => emit(SoundMonitorError(message: error.toString())),
-//     );
-//   }
-//
-//   /// Stops monitoring and resets state.
-//   void stopMonitoring() {
-//     // There's no direct cancel on Stream<double>, but if it's a broadcast stream you could cancel subscription
-//     emit(SoundMonitorInitial());
-//     _subscription = null;
-//   }
-// }
+// sound_monitor_cubit.dart
+
+import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled3/features/sound_detection/domain/entities/classification_result.dart';
+import 'package:untitled3/features/sound_detection/domain/usecases/monitor_sound.dart';
+import 'package:untitled3/features/sound_detection/domain/usecases/start_sound_classification_use_case.dart';
+import 'package:untitled3/features/sound_detection/domain/usecases/stop_sound_classification_use_case.dart';
+import 'sound_monitor_states.dart';
+
+class SoundMonitorCubit extends Cubit<SoundMonitorState> {
+  final MonitorSoundUsecase monitorNoise;
+  final StartSoundClassificationUseCase startClassification;
+  final StopSoundClassificationUseCase stopClassification;
+
+  StreamSubscription<double>? _noiseSub;
+  StreamSubscription<List<ClassificationResult>>? _classSub;
+
+  double _dbLevel = 0.0;
+  List<ClassificationResult> _classes = [];
+
+  SoundMonitorCubit({
+    required this.monitorNoise,
+    required this.startClassification,
+    required this.stopClassification,
+  }) : super(SoundMonitorInitial());
+
+  /// Kick off both noise & classification streams
+  void startMonitoring() {
+    _startNoise();
+    _startClassification();
+  }
+
+  void _startNoise() {
+    if (_noiseSub != null) return;
+    _noiseSub = monitorNoise().listen(
+          (db) {
+        _dbLevel = db;
+        _emitRunning();
+      },
+      onError: (e) => emit(SoundMonitorError(message: e.toString())),
+    );
+  }
+
+  void _startClassification() {
+    if (_classSub != null) return;
+    _classSub = startClassification().listen(
+          (classes) {
+        _classes = classes;
+        _emitRunning();
+      },
+      onError: (e) => emit(SoundMonitorError(message: e.toString())),
+    );
+  }
+
+  void _emitRunning() {
+    emit(SoundMonitorRunning(
+      dbLevel: _dbLevel,
+      soundEvents: _classes.map((c) => c.category).toList(),
+    ));
+  }
+
+  /// Cancel both streams and emit initial state
+  Future<void> stopMonitoring() async {
+    await _noiseSub?.cancel();
+    _noiseSub = null;
+
+    await _classSub?.cancel();
+    _classSub = null;
+
+    stopClassification(); // tell your use-case to tear down any resources
+    emit(SoundMonitorInitial());
+  }
+
+  @override
+  Future<void> close() {
+    _noiseSub?.cancel();
+    _classSub?.cancel();
+    return super.close();
+  }
+}
