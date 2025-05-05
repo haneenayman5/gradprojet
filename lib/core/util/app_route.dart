@@ -28,8 +28,6 @@ abstract class AppRoute {
   static String helpPath = '/help';
   static String accountPath = '/account'; // ✅ ADD THIS
   static String magnifierPath = '/magnifier';
-
-  static String accountPath = '/account';
   static String learningHome = '/learningHome';
   static String learningStart = '/learningStart';
 
@@ -63,7 +61,6 @@ abstract class AppRoute {
       GoRoute(path: accountPath, builder: (_, __) => const AccountPage()),
       GoRoute(path: learningHome, builder: (_, __) => const LearningHome()),
       GoRoute(path: learningStart, builder: (_, __) => const LearningStartScreen()),
-      GoRoute(path: accountPath, builder: (_, __) => const AccountPage()), // ✅ ADD THIS
       GoRoute(
         path: magnifierPath,
         builder: (_, __) => const TextMagnifierSpeakerScreen(),
