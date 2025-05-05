@@ -14,7 +14,13 @@ class ChatHomeRepositoryImpl extends ChatHomeRepository {
   Future<List<ConversationEntity>> getConversations() async {
     try{
       var response =  await service.getConversations();
-      return response.data;
+      var convos = response.data;
+      for (var c in convos) {
+        print("The last message time before: " + c.lastMessageTime.toString());
+        c.lastMessageTime = c.lastMessageTime.toLocal();
+        print("The last message time after: " + c.lastMessageTime.toString());
+      }
+      return convos;
     }
     catch(e) {
       print("Error in getting conversations: ${e.toString()}");

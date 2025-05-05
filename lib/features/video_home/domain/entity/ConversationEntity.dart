@@ -12,7 +12,7 @@
 class ConversationEntity{
   final String otherUserId;
   final String lastMessage;
-  final DateTime lastMessageTime;
+  DateTime lastMessageTime;
   final String otherUserPfpUrl;
 
 

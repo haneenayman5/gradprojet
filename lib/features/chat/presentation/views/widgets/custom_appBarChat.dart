@@ -19,8 +19,9 @@ class CustomAppbarChat extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                context.pop(); // go back
-                context.go(AppRoute.homePath); // then navigate home
+                // context.pop(); // go back
+                // context.go(AppRoute.homePath); // then navigate home
+                GoRouter.of(context).push(AppRoute.homePath);
               },
               icon: const Icon(Icons.arrow_back),
               color: Colors.blue,
