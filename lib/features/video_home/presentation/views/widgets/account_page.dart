@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 import 'package:untitled3/core/constants/constants.dart';
 
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
-  void _showEditDialog(BuildContext context, String title, String currentValue, void Function(String) onSave) {
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
+  // User data
+  String firstName = "John";
+  String lastName = "Doe";
+  String email = "johndoe@example.com";
+  String password = "********";
+  String phone = "+123456789";
+  String dob = "1990-01-01";
+  File? profileImage;
+
+  void _showEditDialog(
+      BuildContext context,
+      String title,
+      String currentValue,
+      void Function(String) onSave,
+      ) {
     final controller = TextEditingController(text: currentValue);
     showDialog(
       context: context,
@@ -31,13 +53,18 @@ class AccountPage extends StatelessWidget {
     );
   }
 
+  void _pickImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        profileImage = File(picked.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Replace these with your real user values
-    String userName = "John Doe";
-    String email = "johndoe@example.com";
-    String password = "********";
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -48,39 +75,54 @@ class AccountPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Profile section
+          // Profile Section
           Center(
             child: Column(
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage("assets/images/default_profile.png"), // Replace with NetworkImage if needed
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: profileImage != null
+                        ? FileImage(profileImage!)
+                        : const AssetImage("assets/images/default_profile.png")
+                    as ImageProvider,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  userName,
+                  "$firstName $lastName",
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  email,
-                  style: const TextStyle(color: Colors.grey),
-                ),
+                Text(email, style: const TextStyle(color: Colors.grey)),
               ],
             ),
           ),
           const SizedBox(height: 24),
           const Divider(),
 
-          // Editable Account Info
+          // Editable Fields
           ListTile(
             leading: const Icon(Icons.person, color: kPrimarycolor),
-            title: const Text("Name"),
-            subtitle: Text(userName),
+            title: const Text("First Name"),
+            subtitle: Text(firstName),
             trailing: const Icon(Icons.edit),
             onTap: () {
-              _showEditDialog(context, "Name", userName, (value) {
-                // Handle save logic here
+              _showEditDialog(context, "First Name", firstName, (value) {
+                setState(() => firstName = value);
+              });
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.person, color: kPrimarycolor),
+            title: const Text("Last Name"),
+            subtitle: Text(lastName),
+            trailing: const Icon(Icons.edit),
+            onTap: () {
+              _showEditDialog(context, "Last Name", lastName, (value) {
+                setState(() => lastName = value);
               });
             },
           ),
@@ -92,7 +134,7 @@ class AccountPage extends StatelessWidget {
             trailing: const Icon(Icons.edit),
             onTap: () {
               _showEditDialog(context, "Email", email, (value) {
-                // Handle save logic here
+                setState(() => email = value);
               });
             },
           ),
@@ -104,35 +146,33 @@ class AccountPage extends StatelessWidget {
             trailing: const Icon(Icons.edit),
             onTap: () {
               _showEditDialog(context, "Password", "", (value) {
-                // Handle password update logic
+                setState(() => password = "********");
               });
             },
           ),
           const Divider(),
-
-          // Additional Account Settings
-          const ListTile(
-            leading: Icon(Icons.language, color: kPrimarycolor),
-            title: Text("Language"),
-            subtitle: Text("Choose your preferred language"),
+          ListTile(
+            leading: const Icon(Icons.phone, color: kPrimarycolor),
+            title: const Text("Phone Number"),
+            subtitle: Text(phone),
+            trailing: const Icon(Icons.edit),
+            onTap: () {
+              _showEditDialog(context, "Phone Number", phone, (value) {
+                setState(() => phone = value);
+              });
+            },
           ),
           const Divider(),
-          const ListTile(
-            leading: Icon(Icons.notifications, color: kPrimarycolor),
-            title: Text("Notifications"),
-            subtitle: Text("Manage notification preferences"),
-          ),
-          const Divider(),
-          const ListTile(
-            leading: Icon(Icons.dark_mode, color: kPrimarycolor),
-            title: Text("Dark Mode"),
-            subtitle: Text("Customize your theme"),
-          ),
-          const Divider(),
-          const ListTile(
-            leading: Icon(Icons.info_outline, color: kPrimarycolor),
-            title: Text("App Info"),
-            subtitle: Text("Version, privacy policy, etc."),
+          ListTile(
+            leading: const Icon(Icons.calendar_today, color: kPrimarycolor),
+            title: const Text("Date of Birth"),
+            subtitle: Text(dob),
+            trailing: const Icon(Icons.edit),
+            onTap: () {
+              _showEditDialog(context, "Date of Birth", dob, (value) {
+                setState(() => dob = value);
+              });
+            },
           ),
           const Divider(),
 
@@ -142,7 +182,6 @@ class AccountPage extends StatelessWidget {
             title: const Text("Logout", style: TextStyle(color: Colors.red)),
             onTap: () {
               // Handle logout logic
-              // context.go(AppRoute.welcomePath);
             },
           ),
         ],
@@ -150,6 +189,7 @@ class AccountPage extends StatelessWidget {
     );
   }
 }
+
 
 
 
