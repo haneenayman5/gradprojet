@@ -11,6 +11,8 @@ import 'features/chat/presentation/blocs/chat_bloc.dart';
 import 'providers/language_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:untitled3/core/util/app_route.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 Future<void> main() async {
   await initializeDependancies();
@@ -45,6 +47,9 @@ Future<void> main() async {
         child: MyApp(),
       )
   );
+
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('Your/City'));
 }
 
 class MyApp extends StatelessWidget {

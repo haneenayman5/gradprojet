@@ -32,23 +32,25 @@ dependencies:
     sdk: flutter
   provider: ^6.0.5  # Ensure this is added
   fluttertoast: ^8.2.1  # Ensure this is added
-  http: ^0.13.6
+  http: ^1.4.0
   intl: ^0.18.0
   flutter_tts: ^3.8.5
 
   shared_preferences: ^2.2.2
-  image_picker: ^1.0.0
 
   font_awesome_flutter: ^10.0.0
 
 
 
 
-  permission_handler: ^11.3.1  # Package for managing runtime permissions
+  permission_handler: ^11.3.1  # Package for managing runtime permission
   flutter_sound: ^9.2.13
   noise_meter: ^5.0.2
+  timezone: ^0.10.1
 
   syncfusion_flutter_gauges: ^29.1.40
+
+  flutter_local_notifications: ^19.1.0
 
   tflite_flutter: ^0.11.0
 

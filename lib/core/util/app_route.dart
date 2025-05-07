@@ -14,7 +14,9 @@ import 'package:untitled3/features/video_chat/presentation/pages/VideoChatTest.d
 import 'package:untitled3/features/video_home/presentation/views/widgets/help_screen.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/account_page.dart';
 
-import '../../features/video_home/presentation/views/widgets/TextMagnifierSpeakerScreen.dart'; // ✅ ADD THIS
+import '../../features/alarm/presentation/pages/alarm_page.dart';
+import '../../features/alarm/presentation/pages/set_alarm_page.dart';
+import '../../features/video_home/presentation/views/widgets/TextMagnifierSpeakerScreen.dart';
 
 abstract class AppRoute {
   static String welcomePath = '/';
