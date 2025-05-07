@@ -32,6 +32,8 @@ abstract class AppRoute {
   static String learningHome = '/learningHome';
   static String learningStart = '/learningStart';
   static String soundDetection = '/soundDetection';
+  static String alarmPath = '/alarm';
+  static String setAlarmPath = '/set_alarm';
 
   static final router = GoRouter(
     routes: [
@@ -72,6 +74,10 @@ abstract class AppRoute {
         builder: (_, __) => const SoundMonitorPage(),
       ),
 
+      GoRoute(path: accountPath, builder: (_, __) => const AccountPage()),
+      GoRoute(path: magnifierPath, builder: (_, __) => const TextMagnifierSpeakerScreen()),
+      GoRoute(path: alarmPath, builder: (_, __) => const AlarmPage()),
+      GoRoute(path: setAlarmPath, builder: (_, __) => const SetAlarmPage()), // Added route
     ],
   );
 }

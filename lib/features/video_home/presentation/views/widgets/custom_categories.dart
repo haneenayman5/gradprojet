@@ -7,6 +7,7 @@ import 'package:untitled3/features/video_home/presentation/manager/select_catego
 import 'package:untitled3/features/video_home/presentation/views/widgets/custom_category.dart';
 import 'package:untitled3/core/util/app_route.dart'; // ✅ Your AppRoute file
 
+
 class CustomCategories extends StatelessWidget {
   const CustomCategories({super.key});
 
@@ -66,6 +67,17 @@ class CustomCategories extends StatelessWidget {
                   onTap: () {
                     context.read<SelectCategoryCubit>().selectCategory(5);
                     context.push(AppRoute.magnifierPath); // ✅ Navigate to Magnifier screen
+                  },
+                ),
+
+                CustomCategory(
+                  width: 110,
+                  title: 'Alarm',
+                  textColor: state is CategoriesIndex6 ? Colors.white : Colors.grey,
+                  backgroundColor: state is CategoriesIndex6 ? kContainerColor : kPrimarycolor,
+                  onTap: () {
+                    context.read<SelectCategoryCubit>().selectCategory(5);
+                    context.push(AppRoute.alarmPath);
                   },
                 ),
               ],

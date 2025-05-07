@@ -23,6 +23,9 @@ class SelectCategoryCubit extends Cubit<SelectCategoryState> {
       case 5:
         emit(CategoriesIndex5());
         break;
+        case 6:
+      emit(CategoriesIndex6());
+      break;
       default:
         emit(CategoriesIndex1());
     }
