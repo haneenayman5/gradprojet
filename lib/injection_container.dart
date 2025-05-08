@@ -14,6 +14,13 @@ import 'package:untitled3/features/chat/data/data_sources/chat_source.dart';
 import 'package:untitled3/features/chat/data/repositories/chat_repository_impl.dart';
 import 'package:untitled3/features/chat/domain/repositories/chat_repository.dart';
 import 'package:untitled3/features/chat/domain/usecases/chat_usecase.dart';
+import 'package:untitled3/features/sound_detection/data/data_sources/sound_local_datasource.dart';
+import 'package:untitled3/features/sound_detection/data/data_sources/sound_local_datasource_impl.dart';
+import 'package:untitled3/features/sound_detection/data/models/sound_classifier_model.dart';
+import 'package:untitled3/features/sound_detection/data/repositories/sound_repository_impl.dart';
+import 'package:untitled3/features/sound_detection/domain/repositories/sound_repository.dart';
+import 'package:untitled3/features/sound_detection/domain/usecases/start_sound_classification_use_case.dart';
+import 'package:untitled3/features/sound_detection/presentation/bloc/sound_monitor_cubit.dart';
 import 'package:untitled3/features/video_home/data/data_source/ConversationService.dart';
 import 'package:untitled3/features/video_home/domain/repository/ChatHomeRepository.dart';
 import 'package:untitled3/features/video_home/domain/usecase/GetConversationsUsecase.dart';
@@ -31,6 +38,8 @@ import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_bloc.
 import 'features/auth/domain/usecases/sign_up.dart';
 import 'features/auth/presentation/bloc/auth/sign_up/sign_up_bloc.dart';
 import 'features/chat/presentation/blocs/chat_bloc.dart';
+import 'features/sound_detection/domain/usecases/monitor_sound.dart';
+import 'features/sound_detection/domain/usecases/stop_sound_classification_use_case.dart';
 import 'features/video_home/data/repository/ChatHomeRepositoryImpl.dart';
 
 final sl = GetIt.instance;
@@ -61,6 +70,16 @@ Future<void> initializeDependancies() async {
   sl.registerFactory<ChatHomeBloc>(
       () => ChatHomeBloc(getConversationUsecase: sl(), getSenderIdUseCase: sl())
   );
+
+
+  sl.registerSingleton<SoundLocalDataSource>(SoundLocalDataSourceImpl());
+  sl.registerSingleton<SoundClassifier>(SoundClassifier());
+  sl.registerSingleton<SoundRepository>(SoundRepositoryImpl(sl(), sl()));
+  // sl.registerSingleton<MonitorSoundUsecase>(FakeMonitorSound());
+  sl.registerSingleton<MonitorSoundUsecase>(RealMonitorSound(repository: sl()));
+  sl.registerSingleton<StartSoundClassificationUseCase>(StartSoundClassificationUseCase(sl()));
+  sl.registerSingleton<StopSoundClassificationUseCase>(StopSoundClassificationUseCase(sl()));
+  sl.registerFactory<SoundMonitorCubit>(() => SoundMonitorCubit(startClassification: sl(), stopClassification: sl(), monitorNoise: sl()));
 
   await initializeVideoChatDependencies();
 }

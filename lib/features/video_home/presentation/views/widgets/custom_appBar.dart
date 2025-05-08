@@ -14,7 +14,8 @@ class CustomAppBar extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.only(top: 50, left: 30, right: 30),
+        padding:
+            const EdgeInsets.only(top: 50, left: 30, right: 30, bottom: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,15 +32,15 @@ class CustomAppBar extends StatelessWidget {
                 const SizedBox(width: 8),
                 // TITLE with blue color
                 Text(
-                  'Chat With \nfriends',
+                  'Chat with \nfriends',
                   style: Styles.textStyle30.copyWith(color: Colors.blue),
                 ),
               ],
             ),
             // MENU BUTTON (modified to blue color)
             CustomIconButton(
-              icon: Icons.menu_rounded,
-              color: Colors.blue, // <-- Set the color to blue
+              icon: Icons.account_circle_rounded,
+              color: Colors.white, // <-- Set the color to blue
               onPressed: () {
                 Scaffold.of(context).openEndDrawer();
               },
@@ -50,6 +51,4 @@ class CustomAppBar extends StatelessWidget {
     );
   }
 }
-
-
 

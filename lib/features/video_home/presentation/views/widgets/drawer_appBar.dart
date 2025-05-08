@@ -4,12 +4,14 @@ import 'package:untitled3/features/video_home/presentation/views/widgets/story_i
 
 class DrawerAppbar extends StatelessWidget {
   final String name;
+  final String imageUrl;
   final String email;
 
   const DrawerAppbar({
     super.key,
     required this.name,
     required this.email,
+    required this.imageUrl
   });
 
   @override
@@ -40,7 +42,7 @@ class DrawerAppbar extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const StoryItem(),
+            StoryItem(imageUrl: imageUrl,),
             const Spacer(flex: 1),
             Text(name, style: Styles.textStyle18.copyWith(color: Colors.white)),
             const Spacer(flex: 2),

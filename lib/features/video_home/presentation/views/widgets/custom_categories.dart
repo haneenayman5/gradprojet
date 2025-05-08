@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart'; // ✅ For navigation
 import 'package:untitled3/core/constants/constants.dart';
@@ -30,6 +31,7 @@ class CustomCategories extends StatelessWidget {
                     context.read<SelectCategoryCubit>().selectCategory(1);
                   },
                 ),
+
                 CustomCategory(
                   width: 90,
                   title: 'Unread',
@@ -86,6 +88,3 @@ class CustomCategories extends StatelessWidget {
     );
   }
 }
-
-
-

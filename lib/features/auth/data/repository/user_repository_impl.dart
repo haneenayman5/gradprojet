@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:untitled3/core/resources/data_state.dart';
+import 'package:untitled3/core/storage/storage.dart';
 import 'package:untitled3/features/auth/data/data_sources/remote/ApiService.dart';
 import 'package:untitled3/features/auth/data/models/user.dart';
 import 'package:untitled3/features/auth/domain/entities/UserEntity.dart';
@@ -63,4 +64,8 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
+  @override
+  Future<void> uploadPfp(File img, String username) async{
+    await apiService.uploadAvatar(username, img);
+  }
 }

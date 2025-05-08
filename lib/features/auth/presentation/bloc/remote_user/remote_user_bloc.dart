@@ -10,6 +10,8 @@ class RemoteUsersBloc extends Bloc<RemoteUsersEvent, RemoteUsersState>{
 
   RemoteUsersBloc(this._getUsersUseCase) : super(const RemoteUsersLoading()){
     on <GetUsers> (onGetUsers);
+
+
   }
 
   void onGetUsers(GetUsers event, Emitter<RemoteUsersState> emit) async

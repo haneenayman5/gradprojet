@@ -5,27 +5,18 @@ import 'package:untitled3/features/auth/presentation/pages/sign_up_screen.dart';
 import 'package:untitled3/features/auth/presentation/pages/welcome_screen.dart';
 import 'package:untitled3/features/chat/presentation/pages/chat_screen_testing.dart';
 import 'package:untitled3/features/chat/presentation/views/chat_view.dart';
+import 'package:untitled3/features/learning/presentation/pages/learning_home.dart';
+import 'package:untitled3/features/learning/presentation/pages/learning_start_screen.dart';
+import 'package:untitled3/features/sound_detection/presentation/pages/sound_monitor_page.dart';
 import 'package:untitled3/features/video_home/presentation/views/home_view.dart';
 import 'package:untitled3/features/search/presentation/views/search_view.dart';
 import 'package:untitled3/features/video_chat/presentation/pages/VideoChatTest.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/help_screen.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/account_page.dart';
-import 'package:untitled3/features/video_home/presentation/views/widgets/TextMagnifierSpeakerScreen.dart';
-import 'package:untitled3/features/video_home/presentation/views/widgets/alarm_page.dart';
-import 'package:untitled3/features/video_home/presentation/views/widgets/set_alarm_page.dart';
-class ChatViewParams {
-  final String senderId;
-  final String receiverId;
 
-  ChatViewParams({required this.senderId, required this.receiverId});
-}
-
-class VideoChatParams {
-  final String username1;
-  final String username2;
-
-  VideoChatParams({required this.username1, required this.username2});
-}
+import '../../features/alarm/presentation/pages/alarm_page.dart';
+import '../../features/alarm/presentation/pages/set_alarm_page.dart';
+import '../../features/video_home/presentation/views/widgets/TextMagnifierSpeakerScreen.dart';
 
 abstract class AppRoute {
   static String welcomePath = '/';
@@ -40,6 +31,9 @@ abstract class AppRoute {
   static String helpPath = '/help';
   static String accountPath = '/account';
   static String magnifierPath = '/magnifier';
+  static String learningHome = '/learningHome';
+  static String learningStart = '/learningStart';
+  static String soundDetection = '/soundDetection';
   static String alarmPath = '/alarm';
   static String setAlarmPath = '/set_alarm';
 
@@ -47,16 +41,13 @@ abstract class AppRoute {
     routes: [
       GoRoute(path: welcomePath, builder: (_, __) => WelcomeScreen()),
       GoRoute(path: homePath, builder: (_, __) => const HomeView()),
-      GoRoute(
-        path: kChatPath,
-        builder: (context, state) {
-          final params = state.extra as ChatViewParams;
-          return ChatView(
-            senderId: params.senderId,
-            receiverId: params.receiverId,
-          );
-        },
-      ),
+      GoRoute(path: kChatPath, builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return ChatView(
+          senderId: extra['senderId'],
+          receiverId: extra['receiverId'],
+        );
+      }),
       GoRoute(path: kSearchPath, builder: (_, __) => const SearchView()),
       GoRoute(path: signInPath, builder: (_, __) => const SignInScreen()),
       GoRoute(path: signUpPath, builder: (_, __) => const SignUpScreen()),
@@ -65,14 +56,26 @@ abstract class AppRoute {
       GoRoute(
         path: videoChatTestPath,
         builder: (context, state) {
-          final params = state.extra as VideoChatParams;
+          final extra = state.extra as Map<String, dynamic>;
           return VideoChatTestPage(
-            username1: params.username1,
-            username2: params.username2,
+            username1: extra['username1'],
+            username2: extra['username2'],
           );
         },
       ),
       GoRoute(path: helpPath, builder: (_, __) => const HelpScreen()),
+      GoRoute(path: accountPath, builder: (_, __) => const AccountPage()),
+      GoRoute(path: learningHome, builder: (_, __) => const LearningHome()),
+      GoRoute(path: learningStart, builder: (_, __) => const LearningStartScreen()),
+      GoRoute(
+        path: magnifierPath,
+        builder: (_, __) => const TextMagnifierSpeakerScreen(),
+      ),
+      GoRoute(
+        path: soundDetection,
+        builder: (_, __) => const SoundMonitorPage(),
+      ),
+
       GoRoute(path: accountPath, builder: (_, __) => const AccountPage()),
       GoRoute(path: magnifierPath, builder: (_, __) => const TextMagnifierSpeakerScreen()),
       GoRoute(path: alarmPath, builder: (_, __) => const AlarmPage()),
@@ -80,9 +83,6 @@ abstract class AppRoute {
     ],
   );
 }
-
-
-
 
 
 

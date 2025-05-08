@@ -30,11 +30,7 @@ class SearchViewBody extends StatelessWidget {
                 if (state is SearchusersInitial) {
                   return const Padding(
                     padding: EdgeInsets.only(left: 15, top: 20, bottom: 20),
-                    child: Text(
-                      'All Users',
-                      style: Styles.textStyle16,
-                    ),
-                  );
+                    );
                 } else if (state is SearchusersFilter) {
                   return const SizedBox(
                     height: 20,
@@ -54,15 +50,21 @@ class SearchViewBody extends StatelessWidget {
               return SliverPadding(
                 padding: const EdgeInsets.only(left: 20, bottom: 60, right: 20),
                 sliver: AllUsersListview(
+                  senderId: state.senderId,
+                  receiverId: state.filterNames.toString(),
                   names: state.filterNames,
                 ),
               );
             }
             if (state is SearchusersInitial) {
-              return SliverPadding(
-                padding: const EdgeInsets.only(left: 20, bottom: 60, right: 20),
-                sliver: AllUsersListview(
-                  names: state.names,
+              return const SliverPadding(
+                padding: EdgeInsets.only(left: 20, bottom: 60, right: 20),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    'Wating for your search',
+                    style: Styles.textStyle16,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
             } else if (state is SearchusersLoading) {

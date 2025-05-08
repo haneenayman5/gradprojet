@@ -6,7 +6,7 @@ class ChatUseCase {
 
   ChatUseCase(this.chatRepository);
 
-  Future<void> connect() => chatRepository.connect();
+  Future<void> connect() async => await chatRepository.connect();
 
   void sendMessage(ChatMessageEntity message) {
     chatRepository.sendMessage(message);

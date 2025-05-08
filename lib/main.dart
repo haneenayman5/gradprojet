@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled3/features/sound_detection/presentation/bloc/sound_monitor_cubit.dart';
 import 'package:untitled3/features/video_home/presentation/bloc/chat_home_bloc.dart';
 import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_bloc.dart';
 import 'package:untitled3/injection_container.dart';
@@ -10,6 +11,8 @@ import 'features/chat/presentation/blocs/chat_bloc.dart';
 import 'providers/language_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:untitled3/core/util/app_route.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 Future<void> main() async {
   await initializeDependancies();
@@ -33,6 +36,9 @@ Future<void> main() async {
               create: (_) => locator<VideoChatBloc>()
           ),
           // Add other BlocProviders here if needed.
+          BlocProvider<SoundMonitorCubit>(
+            create: (_) => locator<SoundMonitorCubit>()
+          ),
           ChangeNotifierProvider<LanguageProvider>(
             create: (_) => LanguageProvider(),
           ),
@@ -41,6 +47,9 @@ Future<void> main() async {
         child: MyApp(),
       )
   );
+
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('Your/City'));
 }
 
 class MyApp extends StatelessWidget {

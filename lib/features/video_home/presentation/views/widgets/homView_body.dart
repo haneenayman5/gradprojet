@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled3/core/constants/constants.dart';
 import 'package:untitled3/features/video_home/presentation/manager/select_category_cubit/select_category_cubit.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/calls_listview.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/custom_appBar.dart';
@@ -12,54 +13,61 @@ class HomeviewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      physics: const BouncingScrollPhysics(),
-      shrinkWrap: true,
-      slivers: [
-        const SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomAppBar(),
-              ShowStoriesListview(),
-              CustomCategories(),
-            ],
-          ),
-        ),
+    // whole-screen background color
+    const background = KBGColor;
 
-        SliverList(
-          delegate:SliverChildListDelegate([ Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30)),
-              ),
-              child: BlocBuilder<SelectCategoryCubit, SelectCategoryState>(
-                builder: (context, state) {
-                  if (state is CategoriesIndex1) {
-                    return const MessagesListview(
-                      notify: 0,
-                    );
-                  } else if (state is CategoriesIndex2) {
-                    return const MessagesListview(
-                      notify: 6,
-                    );
-                  } else if(state is CategoriesIndex3) {
-                    return const CallsListview();
-                  }else{
-                    return  SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                    );
-                  }
-                },
-              ),
+    return Container(
+      color: background,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        shrinkWrap: true,
+        slivers: [
+          const SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomAppBar(),
+                ShowStoriesListview(),
+                CustomCategories(),
+              ],
             ),
-          ),]),
-        )
-      ],
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      // bottom-panel background color
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    child: BlocBuilder<SelectCategoryCubit, SelectCategoryState>(
+                      builder: (context, state) {
+                        if (state is CategoriesIndex1) {
+                          return const MessagesListview(notify: 0);
+                        } else if (state is CategoriesIndex2) {
+                          return const MessagesListview(notify: 6);
+                        } else if (state is CategoriesIndex3) {
+                          return const CallsListview();
+                        } else {
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height,
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

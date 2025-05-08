@@ -21,7 +21,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatLoadMessages>((event, emit) async {
       emit(ChatLoading());
       try{
-        await chatUseCase.connect();
+        // await chatUseCase.connect();
         final messages = await chatUseCase.loadMessages(event.sender, event.receiver);
 
         chatUseCase.onMessageReceived((ChatMessageEntity message) {

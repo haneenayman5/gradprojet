@@ -32,22 +32,40 @@ dependencies:
     sdk: flutter
   provider: ^6.0.5  # Ensure this is added
   fluttertoast: ^8.2.1  # Ensure this is added
-  http: ^0.13.6
+  http: ^1.4.0
   intl: ^0.18.0
   flutter_tts: ^3.8.5
 
   shared_preferences: ^2.2.2
-  image_picker: ^1.0.0
 
   font_awesome_flutter: ^10.0.0
 
 
 
 
-  permission_handler: ^11.3.1  # Package for managing runtime permissions
+  permission_handler: ^11.3.1  # Package for managing runtime permission
+  flutter_sound: ^9.2.13
+  noise_meter: ^5.0.2
+  timezone: ^0.10.1
+
+  syncfusion_flutter_gauges: ^29.1.40
+
+  flutter_local_notifications: ^19.1.0
+
+  tflite_flutter: ^0.11.0
 
   #State managmament
   flutter_bloc: ^8.1.2
+
+  image_picker: ^1.1.2
+
+  record: ^6.0.0
+
+  flutter_staggered_grid_view: ^0.7.0
+
+  camera: ^0.10.0+2
+
+  path: ^1.9.1
 
   #comparing dart objects
   equatable: ^2.0.5
@@ -86,6 +104,8 @@ dev_dependencies:
 
   font_awesome_flutter: ^10.5.0
 
+  image_picker: ^1.1.2
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -102,7 +122,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/paper.png
+    - assets/
+    - assets/models/
 
 
   # The following line ensures that the Material Icons font is

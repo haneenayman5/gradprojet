@@ -12,12 +12,12 @@ class ChatRepositoryImpl extends ChatRepository {
 
   @override
   Future<void> connect() async{
-    chatService.connect();
+    await chatService.connect();
   }
 
   @override
   Future<void> disconnect() async{
-    chatService.disconnect();
+    await chatService.disconnect();
   }
 
   @override

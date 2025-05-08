@@ -7,12 +7,14 @@ class UserModel extends UserEntity {
     String? lastName,
     DateTime? dateOfBirth,
     String? email,
+    String? imageUrl,
   }) : super(
     username: username,
     firstName: firstName,
     lastName: lastName,
     dateOfBirth: dateOfBirth,
     email: email,
+    imageUrl: imageUrl
   );
 
   factory UserModel.fromJson(Map<String, dynamic> map) {
@@ -24,6 +26,7 @@ class UserModel extends UserEntity {
           ? DateTime.tryParse(map['dateOfBirth']) ?? DateTime.now()
           : DateTime.now(),
       email: map['email'] ?? "",
+      imageUrl: map['pfpUrl']
     );
   }
 
@@ -34,6 +37,7 @@ class UserModel extends UserEntity {
       'lastName': lastName,
       'dateOfBirth': dateOfBirth?.toIso8601String(),
       'email': email,
+      'pfpUrl': imageUrl
     };
   }
 }
