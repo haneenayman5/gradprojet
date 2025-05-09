@@ -204,23 +204,24 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:untitled3/core/constants/constants.dart';
 import '../../domain/entities/alarm_entity.dart';
 import '../bloc/alarm_list/alarm_list_cubit.dart';
 import '../../../../../core/util/app_route.dart';
 
 /// Displays list of alarms and allows add, toggle, delete via AlarmListCubit.
 class AlarmPage extends StatelessWidget {
-  const AlarmPage({Key? key}) : super(key: key);
+  const AlarmPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => AlarmListCubit(repository: context.read())..loadAlarms(),
-      child: Scaffold(
+      create: (_) => GetIt.instance<AlarmListCubit>()..loadAlarms(),      child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: kPrimarycolor,
           title: const Text('Your Alarms', style: TextStyle(fontWeight: FontWeight.bold)),
           centerTitle: true,
           elevation: 4,
@@ -291,7 +292,7 @@ class AlarmPage extends StatelessWidget {
                                 size: 32,
                                 color: Colors.deepPurple,
                               ),
-                              onPressed: () => context.read<AlarmListCubit>().toggleAlarm(alarm.id),
+                              onPressed: () => context.read<AlarmListCubit>().toggleAlarm(alarm),
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete_forever, color: Colors.redAccent),

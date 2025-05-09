@@ -1,18 +1,19 @@
 import 'dart:async';
 
+import 'package:untitled3/features/alarm/data/datasources/alarm_notification_ds.dart';
 import 'package:untitled3/features/alarm/domain/entities/alarm_entity.dart';
 import 'package:untitled3/features/alarm/domain/entities/flash_data.dart';
 import 'package:untitled3/features/alarm/domain/entities/vibration_data.dart';
 
 import '../../domain/repositories/alarm_repository.dart';
 import '../datasources/local_alarm_data_source.dart';
-import '../datasources/local_notification_ds.dart';
+import '../../../../core/services/local_notification_ds.dart';
 import '../models/alarm_model.dart';
 
 /// Concrete implementation of [AlarmRepository], wiring domain alarms to
 /// platform notification APIs and optional IoT light flashes.
 class AlarmRepositoryImpl implements AlarmRepository {
-  final LocalNotificationDataSource notifications;
+  final AlarmNotificationService notifications;
   final LocalAlarmDataSource localAlarmDataSource;
 
   // Controller for triggering AlarmEvents when alarms fire
@@ -30,7 +31,7 @@ class AlarmRepositoryImpl implements AlarmRepository {
   Future<void> scheduleAlarm(Alarm alarm) async {
     // Schedule a system notification at the given time
     await localAlarmDataSource.addAlarm(AlarmModel.fromDomain(alarm));
-    await notifications.scheduleNotification(
+    await notifications.scheduleAlarmNotification(
       id: alarm.id,
       title: alarm.label ?? 'Alarm',
       body: 'Alarm for ${alarm.time}',
@@ -42,8 +43,8 @@ class AlarmRepositoryImpl implements AlarmRepository {
   Future<void> updateAlarm(Alarm alarm) async {
     await localAlarmDataSource.updateAlarm(AlarmModel.fromDomain(alarm));
 
-    await notifications.cancelNotification(id: alarm.id);
-    await notifications.scheduleNotification(
+    await notifications.cancelAlarmNotification(alarm.id);
+    await notifications.scheduleAlarmNotification(
       id: alarm.id,
       title: alarm.label ?? 'Alarm',
       body: 'Alarm for ${alarm.time}',
@@ -55,7 +56,7 @@ class AlarmRepositoryImpl implements AlarmRepository {
   Future<void> cancelAlarm(int alarmId) async {
     await localAlarmDataSource.deleteAlarm(alarmId);
     // Cancel system notification
-    await notifications.cancelNotification(id: alarmId);
+    await notifications.cancelAlarmNotification(alarmId);
   }
 
   @override
@@ -75,7 +76,6 @@ class AlarmRepositoryImpl implements AlarmRepository {
   //todo: make sure this is called
   void dispose() {
     _controller.close();
-    notifications.dispose();
   }
 
   @override
