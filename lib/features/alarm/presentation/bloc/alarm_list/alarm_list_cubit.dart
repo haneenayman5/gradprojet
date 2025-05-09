@@ -32,6 +32,12 @@ class AlarmListCubit extends Cubit<AlarmListState> {
   }
 
   Future<void> updateAlarm(Alarm alarm) async {
-    await repository.cancelAlarm(alarm.id);
+    await repository.updateAlarm(alarm);
+    await loadAlarms();
+  }
+  
+  Future<void> toggleAlarm(Alarm alarm) async {
+    var newAlarm = alarm.copyWith(isEnabled: !alarm.isEnabled);
+    updateAlarm(newAlarm);
   }
 }

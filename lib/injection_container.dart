@@ -1,6 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled3/core/storage/storage.dart';
+import 'package:untitled3/core/services/local_notification_ds.dart';
+import 'package:untitled3/features/alarm/data/repositories/alarm_repository_impl.dart';
+import 'package:untitled3/features/alarm/domain/repositories/alarm_repository.dart';
 import 'package:untitled3/features/auth/data/data_sources/remote/ApiService.dart';
 import 'package:untitled3/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:untitled3/features/auth/data/repository/user_repository_impl.dart';
@@ -35,6 +40,9 @@ import 'package:untitled3/features/video_chat/domain/usecases/connectToVideoChat
 import 'package:untitled3/features/video_chat/domain/usecases/disconnectFromVideoChat.dart';
 import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_bloc.dart';
 
+import 'features/alarm/data/datasources/local_alarm_data_source.dart';
+import 'features/alarm/presentation/bloc/alarm_form/alarm_form_cubit.dart';
+import 'features/alarm/presentation/bloc/alarm_list/alarm_list_cubit.dart';
 import 'features/auth/domain/usecases/sign_up.dart';
 import 'features/auth/presentation/bloc/auth/sign_up/sign_up_bloc.dart';
 import 'features/chat/presentation/blocs/chat_bloc.dart';
@@ -72,6 +80,7 @@ Future<void> initializeDependancies() async {
   );
 
 
+  //for the sound detection feature
   sl.registerSingleton<SoundLocalDataSource>(SoundLocalDataSourceImpl());
   sl.registerSingleton<SoundClassifier>(SoundClassifier());
   sl.registerSingleton<SoundRepository>(SoundRepositoryImpl(sl(), sl()));
@@ -80,6 +89,20 @@ Future<void> initializeDependancies() async {
   sl.registerSingleton<StartSoundClassificationUseCase>(StartSoundClassificationUseCase(sl()));
   sl.registerSingleton<StopSoundClassificationUseCase>(StopSoundClassificationUseCase(sl()));
   sl.registerFactory<SoundMonitorCubit>(() => SoundMonitorCubit(startClassification: sl(), stopClassification: sl(), monitorNoise: sl()));
+
+  //for the alarm feature
+  // Register SharedPreferences first
+  sl.registerSingleton<FlutterLocalNotificationsPlugin>(FlutterLocalNotificationsPlugin());
+  sl.registerSingleton<LocalNotificationDataSource>(LocalNotificationDataSource(sl()));
+  sl.registerSingleton<LocalAlarmDataSource>(LocalAlarmDataSource());
+  sl.registerSingleton<AlarmRepository>(
+    AlarmRepositoryImpl(
+      notifications: sl(),
+      localAlarmDataSource: sl(),
+    ),
+  );
+  sl.registerFactory(() => AlarmListCubit(repository: sl()));
+  sl.registerFactory(() => AlarmFormCubit());
 
   await initializeVideoChatDependencies();
 }

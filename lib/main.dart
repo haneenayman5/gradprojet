@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:untitled3/features/alarm/presentation/bloc/alarm_form/alarm_form_cubit.dart';
+import 'package:untitled3/features/alarm/presentation/bloc/alarm_list/alarm_list_cubit.dart';
 import 'package:untitled3/features/sound_detection/presentation/bloc/sound_monitor_cubit.dart';
 import 'package:untitled3/features/video_home/presentation/bloc/chat_home_bloc.dart';
 import 'package:untitled3/features/video_chat/presentation/bloc/video_chat_bloc.dart';
@@ -34,6 +36,12 @@ Future<void> main() async {
           ),
           BlocProvider<VideoChatBloc>(
               create: (_) => locator<VideoChatBloc>()
+          ),
+          BlocProvider<AlarmFormCubit>(
+              create: (_) => locator<AlarmFormCubit>()
+          ),
+          BlocProvider<AlarmListCubit>(
+              create: (_) => locator<AlarmListCubit>()
           ),
           // Add other BlocProviders here if needed.
           BlocProvider<SoundMonitorCubit>(

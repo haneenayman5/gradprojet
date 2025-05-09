@@ -293,17 +293,119 @@
 // }
 //
 
-import 'package:flutter/cupertino.dart';
+//---My version---
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:intl/intl.dart';
+// import 'package:untitled3/core/constants/constants.dart';
+// import 'package:untitled3/features/alarm/domain/entities/week_day.dart';
+// import '../bloc/alarm_form/alarm_form_cubit.dart';
+// import '../bloc/alarm_form/alarm_form_state.dart';
+//
+// class SetAlarmPage extends StatelessWidget {
+//   const SetAlarmPage({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//       create: (_) => AlarmFormCubit(),
+//       child: Scaffold(
+//         appBar: AppBar(
+//           backgroundColor: Colors.deepPurple,
+//           title: const Text('Set Alarm'),
+//           centerTitle: true,
+//         ),
+//         body: BlocBuilder<AlarmFormCubit, AlarmFormState>(
+//           builder: (context, state) {
+//             final alarm = state.alarm;
+//             return Padding(
+//               padding: const EdgeInsets.all(16),
+//               child: Column(
+//                 children: [
+//                   // Time Picker
+//                   Card(
+//                     elevation: 4,
+//                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//                     child: ListTile(
+//                       title: Text(DateFormat('hh:mm a').format(alarm.time),
+//                           style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+//                       trailing: const Icon(Icons.access_time, color: Colors.deepPurple),
+//                       onTap: () async {
+//                         final t = await showTimePicker(
+//                             context: context, initialTime: TimeOfDay.fromDateTime(alarm.time));
+//                         if (t != null) context.read<AlarmFormCubit>().updateTime(alarm.time);
+//                       },
+//                     ),
+//                   ),
+//                   const SizedBox(height: 16),
+//                   // Repeat Days using ChoiceChips
+//                   Card(
+//                     elevation: 4,
+//                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//                     child: Padding(
+//                       padding: const EdgeInsets.all(12),
+//                       child: Wrap(
+//                         spacing: 8,
+//                         children: WeekDay.values.map((day) {
+//                           final selected = alarm.repeatDays.contains(day);
+//                           print("Is selected???? $selected");
+//                           return ChoiceChip(
+//                             label: Text(day.shortName),
+//                             selected: selected,
+//                             selectedColor: Colors.deepPurple,
+//                             onSelected: (_) {
+//                               // Copy the existing List<WeekDay>
+//                               final newDays = List<WeekDay>.from(alarm.repeatDays);
+//                               if (selected) {
+//                                 newDays.remove(day);
+//                               } else {
+//                                 newDays.add(day);
+//                               }
+//                               // Update with the new List<WeekDay>
+//                               context.read<AlarmFormCubit>().updateRepeat(newDays);
+//                             },
+//                           );
+//                         }).toList(),
+//                       ),
+//                     ),
+//                   ),
+//
+//                   const Spacer(),
+//                   ElevatedButton.icon(
+//                     style: ElevatedButton.styleFrom(
+//                       backgroundColor: kPrimarycolor,
+//                       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+//                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//                     ),
+//                     icon: const Icon(Icons.check),
+//                     label: const Text('Save Alarm', style: TextStyle(fontSize: 18)),
+//                     onPressed: state.isValid
+//                         ? () => Navigator.of(context).pop(alarm)
+//                         : null,
+//                   ),
+//                   const SizedBox(height: 16),
+//                 ],
+//               ),
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../domain/entities/week_day.dart';
 import '../bloc/alarm_form/alarm_form_cubit.dart';
-
+import '../bloc/alarm_form/alarm_form_state.dart';
 class SetAlarmPage extends StatelessWidget {
   const SetAlarmPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Provide the form cubit (optionally pass an initial Alarm)
     return BlocProvider(
       create: (_) => AlarmFormCubit(),
       child: Scaffold(
@@ -315,44 +417,81 @@ class SetAlarmPage extends StatelessWidget {
         body: BlocBuilder<AlarmFormCubit, AlarmFormState>(
           builder: (context, state) {
             final alarm = state.alarm;
+
             return Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // Time Picker
+                  // ─── Time Picker ─────────────────────────────────────────────
                   Card(
                     elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    color: Colors.deepPurple.shade100,
                     child: ListTile(
-                      title: Text(alarm.alarmSettings.time.format(context),
-                          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                      trailing: const Icon(Icons.access_time, color: Colors.deepPurple),
+                      title: Text(
+                        // use intl DateFormat
+                        TimeOfDay.fromDateTime(alarm.time)
+                            .format(context),
+                        style: const TextStyle(
+                            fontSize: 32, fontWeight: FontWeight.bold),
+                      ),
+                      trailing:
+                      const Icon(Icons.access_time, color: Colors.white),
                       onTap: () async {
-                        final t = await showTimePicker(
-                            context: context, initialTime: alarm.alarmSettings.time);
-                        if (t != null) context.read<AlarmFormCubit>().updateTime(t);
+                        final picked = await showTimePicker(
+                          context: context,
+                          initialTime:
+                          TimeOfDay.fromDateTime(alarm.time),
+                        );
+                        if (picked != null) {
+                          // reconstruct DateTime with picked hour/minute
+                          final now = DateTime.now();
+                          final newTime = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            picked.hour,
+                            picked.minute,
+                          );
+                          context
+                              .read<AlarmFormCubit>()
+                              .updateTime(newTime);
+                        }
                       },
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Repeat Days using ChoiceChips
+
+                  // ─── Repeat Days ────────────────────────────────────────────
                   Card(
                     elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    color: Colors.deepPurple.shade100,
                     child: Padding(
                       padding: const EdgeInsets.all(12),
                       child: Wrap(
                         spacing: 8,
-                        children: AlarmSettings.daysOfWeek.map((d) {
-                          final selected = alarm.alarmSettings.repeatDays.contains(d);
+                        children: WeekDay.values.map((day) {
+                          final selected =
+                          alarm.repeatDays.contains(day);
                           return ChoiceChip(
-                            label: Text(d),
+                            label: Text(day.shortName),
                             selected: selected,
                             selectedColor: Colors.deepPurple,
                             onSelected: (_) {
-                              final newDays = List<String>.from(alarm.alarmSettings.repeatDays);
-                              selected ? newDays.remove(d) : newDays.add(d);
-                              context.read<AlarmFormCubit>().updateRepeat(newDays);
+                              // add/remove day
+                              final newDays =
+                              List<WeekDay>.from(alarm.repeatDays);
+                              if (selected) {
+                                newDays.remove(day);
+                              } else {
+                                newDays.add(day);
+                              }
+                              context
+                                  .read<AlarmFormCubit>()
+                                  .updateRepeat(newDays);
                             },
                           );
                         }).toList(),
@@ -360,14 +499,19 @@ class SetAlarmPage extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
+
+                  // ─── Save Button ────────────────────────────────────────────
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                     icon: const Icon(Icons.check),
-                    label: const Text('Save Alarm', style: TextStyle(fontSize: 18)),
+                    label: const Text('Save Alarm',
+                        style: TextStyle(fontSize: 18)),
                     onPressed: state.isValid
                         ? () => Navigator.of(context).pop(alarm)
                         : null,
