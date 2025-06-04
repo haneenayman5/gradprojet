@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled3/features/chat/presentation/views/widgets/chat_listView.dart';
 import 'package:untitled3/features/chat/presentation/views/widgets/custom_appBarChat.dart';
 import 'package:untitled3/features/chat/presentation/views/widgets/custom_textField.dart';
-
 import '../../../../../core/constants/constants.dart';
 import '../../../domain/entities/message.dart';
 import '../../blocs/chat_bloc.dart';
@@ -25,13 +24,11 @@ class ChatviewBody extends StatefulWidget {
 }
 
 class _ChatviewBodyState extends State<ChatviewBody> {
-  final GlobalKey<FormState> formKey1 = GlobalKey();
-  final ScrollController controller = ScrollController();
-  final TextEditingController textEditingController = TextEditingController();
+  final formKey1 = GlobalKey<FormState>();
+  final controller = ScrollController();
+  final textEditingController = TextEditingController();
 
   late ChatBloc _chatBloc;
-  final List<ChatMessageEntity> _messages = <ChatMessageEntity>[];
-
   String? text;
 
   @override
@@ -60,11 +57,15 @@ class _ChatviewBodyState extends State<ChatviewBody> {
     _chatBloc.add(ChatSendMessage(message: message));
     textEditingController.clear();
 
-    controller.animateTo(
-      0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeIn,
-    );
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (controller.hasClients) {
+        controller.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   @override
@@ -92,51 +93,46 @@ class _ChatviewBodyState extends State<ChatviewBody> {
                   const SizedBox(height: 15),
                   CustomAppbarChat(name: widget.receiverId),
                   const SizedBox(height: 20),
-
-                  /// Bloc Builder to handle chat state
-                  BlocConsumer<ChatBloc, ChatState>(
-                    builder: (context, state) {
-                      if (state is ChatLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is ChatMessagesLoadingSuccess || state is ChatUpdating) {
-                        final messages = _messages.map((msg) => msg.message).toList();
-                        final times = _messages.map((msg) => msg.time).toList();
-                        final senderIds = _messages.map((msg) => msg.sender).toList();
-
-                        return ChatListview(
-                          controller: controller,
-                          messages: messages,
-                          name: widget.receiverId,
-                          time: times,
-                          senderIds: senderIds,
-                          currentUserId: widget.senderId,
-                        );
-                      } else if (state is ChatMessagesLoadingFailure) {
-                        return Center(child: Text("Error loading messages: ${state.error}"));
-                      }
-                      return const Center(child: Text("No messages yet"));
-                    },
-                    listener: (context, state) {
-                      if (state is ChatMessagesLoadingSuccess) {
-                        _messages.clear();
-                        for (var model in state.messages) {
-                          _messages.add(ChatMessageEntity.fromModel(model));
+                  Expanded(
+                    child: BlocConsumer<ChatBloc, ChatState>(
+                      listener: (context, state) {
+                        // Auto-scroll to latest message
+                        if (state is ChatMessagesLoadingSuccess || state is ChatUpdating) {
+                          Future.delayed(const Duration(milliseconds: 300), () {
+                            if (controller.hasClients) {
+                              controller.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          });
                         }
-                      } else if (state is ChatAddingMessage) {
-                        _messages.insert(0, state.message);
-                        _chatBloc.add(ChatUpdateMessages());
-                      }
-                    },
-                  ),
-
-                  /// Chat input field
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 20,
-                      left: 20,
-                      bottom: 15,
-                      top: 20,
+                      },
+                      builder: (context, state) {
+                        if (state is ChatLoading) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (state is ChatMessagesLoadingSuccess || state is ChatUpdating) {
+                          final messages = state is ChatMessagesLoadingSuccess
+                              ? state.messages
+                              : (state as ChatUpdating).messages;
+                          return ChatListview(
+                            controller: controller,
+                            messages: messages.map((e) => e.message).toList(),
+                            name: widget.receiverId,
+                            time: messages.map((e) => e.time).toList(),
+                            senderIds: messages.map((e) => e.sender).toList(),
+                            currentUserId: widget.senderId,
+                          );
+                        } else if (state is ChatMessagesLoadingFailure) {
+                          return Center(child: Text("Error loading messages: ${state.error}"));
+                        }
+                        return const Center(child: Text("No messages yet"));
+                      },
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     child: CustomTextfield(
                       controller: textEditingController,
                       onSubmitted: (data) {
@@ -144,12 +140,12 @@ class _ChatviewBodyState extends State<ChatviewBody> {
                           _sendMessage(data);
                         }
                       },
-                      onChanged: (value) {
-                        text = value;
-                      },
+                      onChanged: (value) => text = value,
                       onTap: () {
-                        if (formKey1.currentState!.validate() && text != null && text!.isNotEmpty) {
-                          _sendMessage(text!);
+                        if (formKey1.currentState!.validate() &&
+                            text != null &&
+                            text!.trim().isNotEmpty) {
+                          _sendMessage(text!.trim());
                         }
                       },
                     ),

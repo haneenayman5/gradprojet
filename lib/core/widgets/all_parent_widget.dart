@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 import 'package:untitled3/core/util/app_route.dart';
 import 'package:untitled3/main.dart';
 

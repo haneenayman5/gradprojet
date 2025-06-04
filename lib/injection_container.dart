@@ -68,165 +68,15 @@ import 'features/video_home/data/repository/ChatHomeRepositoryImpl.dart';
 
 final sl = GetIt.instance;
 
-Future<void> initializeDependancies() async {
-  sl.registerSingleton<SecureStorage>(
-      SecureStorage()
-  );
-
-  sl.registerSingleton<Dio>(createDioWithToken(sl()));
-
-  sl.registerSingleton<FlutterLocalNotificationsPlugin>(FlutterLocalNotificationsPlugin());
-  sl.registerSingleton<LocalNotificationDataSource>(LocalNotificationDataSource(sl()));
-
-  await initializeAuth();
-
-  sl.registerSingleton<ChatService>(ChatService(secureStorage: sl()));
-
-  sl.registerSingleton<ChatRepository>(ChatRepositoryImpl(sl()));
-
-  sl.registerSingleton<ChatUseCase>(ChatUseCase(sl()));
-
-  sl.registerFactory<ChatBloc>(
-          () => ChatBloc(chatUseCase: sl())
-  );
-
-  sl.registerSingleton<ConversationService>(ConversationService(sl()));
-  sl.registerSingleton<ChatHomeRepository>(ChatHomeRepositoryImpl(service: sl(), secureStorage: sl()));
-  sl.registerSingleton<GetConversationUsecase>(GetConversationUsecase(chatHomeRepository: sl()));
-  sl.registerSingleton<GetSenderIdUseCase>(GetSenderIdUseCase(chatHomeRepository: sl()));
-  sl.registerFactory<ChatHomeBloc>(
-      () => ChatHomeBloc(getConversationUsecase: sl(), getSenderIdUseCase: sl())
-  );
-
-
-  //for the sound detection feature
-  sl.registerSingleton<SoundLocalDataSource>(SoundLocalDataSourceImpl());
-  sl.registerSingleton<SoundClassifier>(SoundClassifier());
-  sl.registerSingleton<SoundRepository>(SoundRepositoryImpl(sl(), sl()));
-  // sl.registerSingleton<MonitorSoundUsecase>(FakeMonitorSound());
-  sl.registerSingleton<MonitorSoundUsecase>(RealMonitorSound(repository: sl()));
-  sl.registerSingleton<StartSoundClassificationUseCase>(StartSoundClassificationUseCase(sl()));
-  sl.registerSingleton<StopSoundClassificationUseCase>(StopSoundClassificationUseCase(sl()));
-  sl.registerFactory<SoundMonitorCubit>(() => SoundMonitorCubit(startClassification: sl(), stopClassification: sl(), monitorNoise: sl()));
-
-  //for the alarm feature
-  sl.registerSingleton<LocalAlarmDataSource>(LocalAlarmDataSource());
-  sl.registerSingleton<AlarmCallbackService>(AlarmCallbackService());
-  final alarmNotificationService = AlarmNotificationService(sl());
-  alarmNotificationService.initialize();
-  sl.registerSingleton<AlarmNotificationService>(alarmNotificationService);
-  sl.registerSingleton<AlarmRepository>(
-    AlarmRepositoryImpl(
-      notifications: sl(),
-      localAlarmDataSource: sl(),
-      alarmCallbackService: sl(),
-    ),
-  );
-  sl.registerFactory(() => AlarmListCubit(repository: sl()));
-  sl.registerFactory(() => AlarmFormCubit());
-
-  await initializeVideoChatDependencies();
-
-  sl.registerSingleton<UpdateAccountService>(UpdateAccountService(sl()));
-  sl.registerSingleton<UpdateAccountRepository>(UpdateAccountRepositoryImpl(updateAccountService: sl()));
-  sl.registerSingleton<UploadAvatarUsecase>(UploadAvatarUsecase(apiService: sl()));
-  sl.registerSingleton<UpdateAccountUseCase>(UpdateAccountUseCase(sl()));
-  sl.registerSingleton<GetCurrentUserUsecase>(GetCurrentUserUsecase(userRepository: sl()));
-  sl.registerFactory<AccountCubit>(() => AccountCubit(updateProfileImageUseCase: sl(), getUserUseCase: sl(), updateAccountUseCase: sl(), getCurrentUserUsecase: sl()));
-}
-
-Future<void> initializeAuth() async {
-  sl.registerSingleton<ApiService>(ApiService(sl()));
-
-  sl.registerSingleton<AuthRepository>(
-      AuthRepositoryImpl(sl(), sl())
-  );
-
-  sl.registerSingleton<UserRepository>(
-      UserRepositoryImpl(sl())
-  );
-
-  sl.registerSingleton<GetUserUseCase>(
-    GetUserUseCase(sl())
-  );
-
-  sl.registerSingleton<GetUsersUseCase>(
-      GetUsersUseCase(sl())
-  );
-
-  sl.registerFactory<RemoteUsersBloc>(
-          () => RemoteUsersBloc(sl())
-  );
-
-  sl.registerSingleton<SignInUseCase>(
-      SignInUseCase(sl())
-  );
-
-  sl.registerFactory<SignInBloc>(
-          () => SignInBloc(sl())
-  );
-
-  sl.registerSingleton<SignUpUseCase>(
-      SignUpUseCase(authRepository: sl())
-  );
-
-  sl.registerFactory<SignUpBloc>(
-          () => SignUpBloc(sl())
-  );
-}
-
-Future<void> initializeVideoChatDependencies() async {
-  sl.registerSingleton<AgoraService>(
-    AgoraService(sl())
-  );
-
-  sl.registerSingleton<ASLDetector>(await ASLDetector.initialize());
-  sl.registerSingleton<Hands>(await Hands.initialize());
-  sl.registerSingleton<FrameObserver>(FrameObserver(aslDetector: sl(), hands: sl()));
-  sl.registerSingleton<VideoChatRepository>(
-        AgoraVideoChatRepository(agoraService: sl(), frameObserver: sl()),
-  );
-
-
-  // Register the use cases that depend on the repository.
-  sl.registerSingleton<ConnectToVideoChatUsecase>(
-        ConnectToVideoChatUsecase(repository: sl()),
-  );
-
-  sl.registerSingleton<DisconnectFromVideoChatUsecase>(
-    DisconnectFromVideoChatUsecase(videoChatRepository: sl()),
-  );
-
-  sl.registerSingleton<GetLocalUserStreamUsecase>(
-        GetLocalUserStreamUsecase(repository: sl<VideoChatRepository>()),
-  );
-
-  sl.registerSingleton<GetRemoteUserStreamUsecase>(
-    GetRemoteUserStreamUsecase(repository: sl()),
-  );
-
-  sl.registerSingleton<GetPredictionStreamUsecase>(GetPredictionStreamUsecase(videoChatRepository: sl()));
-
-  // Register the BLoC. Using registerFactory here to create a new instance each time.
-  sl.registerFactory<VideoChatBloc>(() => VideoChatBloc(
-    connectUsecase: sl(),
-    disconnectUsecase: sl(),
-    getLocalUserStreamUsecase: sl(),
-    getRemoteUserStreamUsecase: sl(),
-  ));
-
-}
-
+// Top-level function to create Dio with token interceptor
 Dio createDioWithToken(SecureStorage secureStorage) {
   final dio = Dio();
 
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) async {
-        // Retrieve the token from secure storage.
         final token = await secureStorage.getToken();
         if (token != null && token.isNotEmpty) {
-          // Add the token to the Authorization header.
           options.headers["Authorization"] = "Bearer $token";
         }
         return handler.next(options);
@@ -235,4 +85,212 @@ Dio createDioWithToken(SecureStorage secureStorage) {
   );
 
   return dio;
+}
+
+Future<void> initializeDependancies() async {
+  sl.registerSingleton<SecureStorage>(SecureStorage());
+
+  sl.registerLazySingleton<Dio>(() => createDioWithToken(sl()));
+
+  sl.registerLazySingleton<FlutterLocalNotificationsPlugin>(
+        () => FlutterLocalNotificationsPlugin(),
+  );
+
+  sl.registerLazySingleton<LocalNotificationDataSource>(
+        () => LocalNotificationDataSource(sl()),
+  );
+
+  await initializeAuth();
+
+  sl.registerLazySingleton<ChatService>(
+        () => ChatService(secureStorage: sl()),
+  );
+
+  sl.registerLazySingleton<ChatRepository>(
+        () => ChatRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton<ChatUseCase>(
+        () => ChatUseCase(sl()),
+  );
+
+  sl.registerFactory<ChatBloc>(
+        () => ChatBloc(chatUseCase: sl()),
+  );
+
+  sl.registerLazySingleton<ConversationService>(
+        () => ConversationService(sl()),
+  );
+
+  sl.registerLazySingleton<ChatHomeRepository>(
+        () => ChatHomeRepositoryImpl(service: sl(), secureStorage: sl()),
+  );
+
+  sl.registerLazySingleton<GetConversationUsecase>(
+        () => GetConversationUsecase(chatHomeRepository: sl()),
+  );
+
+  sl.registerLazySingleton<GetSenderIdUseCase>(
+        () => GetSenderIdUseCase(chatHomeRepository: sl()),
+  );
+
+  sl.registerFactory<ChatHomeBloc>(
+        () => ChatHomeBloc(
+      getConversationUsecase: sl(),
+      getSenderIdUseCase: sl(),
+    ),
+  );
+
+  // Sound detection
+  sl.registerLazySingleton<SoundLocalDataSource>(
+        () => SoundLocalDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<SoundClassifier>(
+        () => SoundClassifier(),
+  );
+
+  sl.registerLazySingleton<SoundRepository>(
+        () => SoundRepositoryImpl(sl(), sl()),
+  );
+
+  sl.registerLazySingleton<MonitorSoundUsecase>(
+        () => RealMonitorSound(repository: sl()),
+  );
+
+  sl.registerLazySingleton<StartSoundClassificationUseCase>(
+        () => StartSoundClassificationUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<StopSoundClassificationUseCase>(
+        () => StopSoundClassificationUseCase(sl()),
+  );
+
+  sl.registerFactory<SoundMonitorCubit>(
+        () => SoundMonitorCubit(
+      startClassification: sl(),
+      stopClassification: sl(),
+      monitorNoise: sl(),
+    ),
+  );
+
+  // Alarm feature
+  sl.registerLazySingleton<LocalAlarmDataSource>(
+        () => LocalAlarmDataSource(),
+  );
+
+  sl.registerLazySingleton<AlarmCallbackService>(
+        () => AlarmCallbackService(),
+  );
+
+  final alarmNotificationService = AlarmNotificationService(sl());
+  await alarmNotificationService.initialize(); // Await initialization if async
+  sl.registerSingleton<AlarmNotificationService>(alarmNotificationService);
+
+  sl.registerLazySingleton<AlarmRepository>(
+        () => AlarmRepositoryImpl(
+      notifications: sl(),
+      localAlarmDataSource: sl(),
+      alarmCallbackService: sl(),
+    ),
+  );
+
+  sl.registerFactory(() => AlarmListCubit(repository: sl()));
+  sl.registerFactory(() => AlarmFormCubit());
+
+  await initializeVideoChatDependencies();
+
+  sl.registerLazySingleton<UpdateAccountService>(
+        () => UpdateAccountService(sl()),
+  );
+
+  sl.registerLazySingleton<UpdateAccountRepository>(
+        () => UpdateAccountRepositoryImpl(updateAccountService: sl()),
+  );
+
+  sl.registerLazySingleton<UploadAvatarUsecase>(
+        () => UploadAvatarUsecase(apiService: sl()),
+  );
+
+  sl.registerLazySingleton<UpdateAccountUseCase>(
+        () => UpdateAccountUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<GetCurrentUserUsecase>(
+        () => GetCurrentUserUsecase(userRepository: sl()),
+  );
+
+  sl.registerFactory<AccountCubit>(
+        () => AccountCubit(
+      updateProfileImageUseCase: sl(),
+      getUserUseCase: sl(),
+      updateAccountUseCase: sl(),
+      getCurrentUserUsecase: sl(),
+    ),
+  );
+}
+
+Future<void> initializeAuth() async {
+  sl.registerLazySingleton<ApiService>(() => ApiService(sl()));
+
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl(), sl()));
+
+  sl.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<GetUserUseCase>(() => GetUserUseCase(sl()));
+
+  sl.registerLazySingleton<GetUsersUseCase>(() => GetUsersUseCase(sl()));
+
+  sl.registerFactory<RemoteUsersBloc>(() => RemoteUsersBloc(sl()));
+
+  sl.registerLazySingleton<SignInUseCase>(() => SignInUseCase(sl()));
+
+  sl.registerFactory<SignInBloc>(() => SignInBloc(sl()));
+
+  sl.registerLazySingleton<SignUpUseCase>(() => SignUpUseCase(authRepository: sl()));
+
+  sl.registerFactory<SignUpBloc>(() => SignUpBloc(sl()));
+}
+
+Future<void> initializeVideoChatDependencies() async {
+  sl.registerSingleton<AgoraService>(AgoraService(sl()));
+
+  sl.registerLazySingletonAsync<ASLDetector>(() async => await ASLDetector.initialize());
+  sl.registerLazySingletonAsync<Hands>(() async => await Hands.initialize());
+
+  await sl.isReady<ASLDetector>();
+  await sl.isReady<Hands>();
+
+  sl.registerSingleton<FrameObserver>(FrameObserver(aslDetector: sl(), hands: sl()));
+
+  sl.registerSingleton<VideoChatRepository>(
+    AgoraVideoChatRepository(agoraService: sl(), frameObserver: sl()),
+  );
+
+  sl.registerSingleton<ConnectToVideoChatUsecase>(
+    ConnectToVideoChatUsecase(repository: sl()),
+  );
+
+  sl.registerSingleton<DisconnectFromVideoChatUsecase>(
+    DisconnectFromVideoChatUsecase(videoChatRepository: sl()),
+  );
+
+  sl.registerSingleton<GetLocalUserStreamUsecase>(
+    GetLocalUserStreamUsecase(repository: sl<VideoChatRepository>()),
+  );
+
+  sl.registerSingleton<GetRemoteUserStreamUsecase>(
+    GetRemoteUserStreamUsecase(repository: sl()),
+  );
+
+  sl.registerSingleton<GetPredictionStreamUsecase>(
+    GetPredictionStreamUsecase(videoChatRepository: sl()),
+  );
+
+  sl.registerFactory<VideoChatBloc>(() => VideoChatBloc(
+    connectUsecase: sl(),
+    disconnectUsecase: sl(),
+    getLocalUserStreamUsecase: sl(),
+    getRemoteUserStreamUsecase: sl(),
+  ));
 }

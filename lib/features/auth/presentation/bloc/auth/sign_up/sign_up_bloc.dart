@@ -40,7 +40,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
         emit(SignUpFailure(errorMessage));
       } catch (e) {
-        emit(SignUpFailure('Unexpected error occurred.'));
+        emit(SignUpFailure('An account with this email or username already exists'));
       }
     });
   }

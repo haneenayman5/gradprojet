@@ -46,4 +46,4 @@ class ChatDisconnect extends ChatEvent {
 
 class ChatUpdateMessages extends ChatEvent { //after a new message is received or something like that
 
-}
+} 

@@ -9,21 +9,25 @@ class ChatRepositoryImpl extends ChatRepository {
 
   ChatRepositoryImpl(this.chatService);
 
-
   @override
-  Future<void> connect() async{
+  Future<void> connect() async {
     await chatService.connect();
   }
 
   @override
-  Future<void> disconnect() async{
+  Future<void> disconnect() async {
     await chatService.disconnect();
   }
 
   @override
-  void sendMessage(ChatMessageEntity message) {
-    final model = ChatMessageModel(sender: message.sender, receiver: message.receiver, message: message.message, time: message.time);
-    chatService.sendMessage(model);
+  Future<void> sendMessage(ChatMessageEntity message) async {
+    final model = ChatMessageModel(
+      sender: message.sender,
+      receiver: message.receiver,
+      message: message.message,
+      time: message.time,
+    );
+    await chatService.sendMessage(model);
   }
 
   @override
@@ -37,6 +41,15 @@ class ChatRepositoryImpl extends ChatRepository {
     chatService.onMessageReceived(callback);
   }
 
+  @override
+  Future<void> cacheMessages(String senderId, String receiverId, List<ChatMessageEntity> messages) {
+    // TODO: implement cacheMessages
+    throw UnimplementedError();
+  }
 
-
+  @override
+  Future<List<ChatMessageEntity>> getCachedMessages(String senderId, String receiverId) {
+    // TODO: implement getCachedMessages
+    throw UnimplementedError();
+  }
 }

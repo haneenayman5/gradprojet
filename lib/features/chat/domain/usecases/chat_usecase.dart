@@ -8,8 +8,8 @@ class ChatUseCase {
 
   Future<void> connect() async => await chatRepository.connect();
 
-  void sendMessage(ChatMessageEntity message) {
-    chatRepository.sendMessage(message);
+  Future<void> sendMessage(ChatMessageEntity message) async {
+    await chatRepository.sendMessage(message);
   }
 
   void onMessageReceived(Function(ChatMessageEntity) callback) {
@@ -20,7 +20,14 @@ class ChatUseCase {
     final messages = await chatRepository.loadMessages(sender, receiver);
     messages.sort((a, b) => b.time.compareTo(a.time));
     return messages;
+  }
 
+  Future<List<ChatMessageEntity>> getCachedMessages(String sender, String receiver) async {
+    return await chatRepository.getCachedMessages(sender, receiver);
+  }
+
+  Future<void> cacheMessages(String sender, String receiver, List<ChatMessageEntity> messages) async {
+    await chatRepository.cacheMessages(sender, receiver, messages);
   }
 
   Future<void> disconnect() => chatRepository.disconnect();

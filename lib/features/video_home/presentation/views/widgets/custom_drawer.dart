@@ -20,6 +20,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as path;
 import 'package:get_it/get_it.dart';
 
+// Keep all your imports unchanged
+
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
 
@@ -33,11 +35,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
   @override
   void initState() {
     super.initState();
-    loadUser();
+    _loadUser();
   }
 
-  Future<void> loadUser() async {
-    final storage = FlutterSecureStorage();
+  Future<void> _loadUser() async {
+    final storage = const FlutterSecureStorage();
     final username = await storage.read(key: 'username');
     if (username == null) return;
 
@@ -47,6 +49,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     final result = await userUseCase.call(params: username);
 
+    if (!mounted) return;
     if (result is DataSuccess<UserEntity>) {
       setState(() {
         user = result.data;
@@ -66,124 +69,109 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25, top: 30, bottom: 30),
-      child: Column(
-        children: [
-          DrawerAppbar(
-            name: getDisplayName(),
-            email: user?.email ?? '',
-            imageUrl: user?.imageUrl?? '',
-          ),
-          const SizedBox(height: 10),
-          GestureDetector(
-            onTap: () {
-              GoRouter.of(context).push(AppRoute.accountPath, extra: {
-                'prevPath': AppRoute.chatHomePath
-              });
-            },
-            child: const DrawerListileItem(
-              icon: Icon(FontAwesomeIcons.key, color: Colors.white, size: 22),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 25, top: 30, bottom: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DrawerAppbar(
+              name: getDisplayName(),
+              email: user?.email ?? '',
+              imageUrl: user?.imageUrl ?? '',
+            ),
+            const SizedBox(height: 10),
+            _buildGestureTile(
+              icon: const Icon(FontAwesomeIcons.key, color: Colors.white, size: 22),
               title: 'Account',
+              onTap: () => GoRouter.of(context).push(AppRoute.accountPath, extra: {
+                'prevPath': AppRoute.chatHomePath,
+              }),
             ),
-          ),
-          const DrawerListileItem(
-            icon: Icon(Icons.forum_rounded, color: Colors.white, size: 25),
-            title: 'Chats',
-          ),
-          const DrawerListileItem(
-            icon: Icon(Icons.notifications_active_rounded, color: Colors.white, size: 25),
-            title: 'Notifications',
-          ),
-          const DrawerListileItem(
-            icon: Icon(FontAwesomeIcons.database, color: Colors.white, size: 22),
-            title: 'Data and Storage',
-          ),
-          GestureDetector(
-            onTap: () {
-              GoRouter.of(context).push(AppRoute.helpPath);
-            },
-            child: const DrawerListileItem(
-              icon: Icon(FontAwesomeIcons.solidCircleQuestion, color: Colors.white, size: 22),
+            const DrawerListileItem(
+              icon: Icon(Icons.forum_rounded, color: Colors.white, size: 25),
+              title: 'Chats',
+            ),
+            const DrawerListileItem(
+              icon: Icon(Icons.notifications_active_rounded, color: Colors.white, size: 25),
+              title: 'Notifications',
+            ),
+            const DrawerListileItem(
+              icon: Icon(FontAwesomeIcons.database, color: Colors.white, size: 22),
+              title: 'Data and Storage',
+            ),
+            _buildGestureTile(
+              icon: const Icon(FontAwesomeIcons.solidCircleQuestion, color: Colors.white, size: 22),
               title: 'Help',
+              onTap: () => GoRouter.of(context).push(AppRoute.helpPath),
             ),
-          ),
-          GestureDetector(
-            onTap: () async {
-              final picker = ImagePicker();
-              final picked = await picker.pickImage(source: ImageSource.gallery);
-              if (picked != null) {
-                final File imageFile = File(picked.path);
-
-                final BuildContext currentContext = context;
-                // show a confirmation dialog with the image preview
-                final bool? confirmed = await showDialog<bool>(
-                  context: currentContext,
-                  builder: (_) => AlertDialog(
-                    title: const Text("Confirm Avatar"),
-                    content: Image.file(
-                      imageFile,
-                      width: 200,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text("Cancel"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text("Confirm"),
-                      ),
-                    ],
-                  ),
-                );
-
-                var getIt = GetIt.instance;
-                var apiService = getIt<ApiService>(); //Todo: this is bad
-                await apiService.uploadAvatar(user?.username?? "", imageFile);
-
-
-                ScaffoldMessenger.of(currentContext).showSnackBar(
-                  const SnackBar(content: Text("Avatar uploaded! Reloading…")),
-                );
-                GoRouter.of(currentContext).push(AppRoute.chatHomePath
-                );
-              }
-
-    },
-            child: const DrawerListileItem(
-              icon: Icon(FontAwesomeIcons.solidCircleQuestion, color: Colors.white, size: 22),
-              title: 'Upload new profile picture',
+            _buildGestureTile(
+              icon: const Icon(FontAwesomeIcons.image, color: Colors.white, size: 22),
+              title: 'Upload picture',
+              onTap: _handleAvatarUpload,
             ),
-          ),
-          const SizedBox(height: 10),
-          const Padding(
-            padding: EdgeInsets.only(left: 5, right: 30),
-            child: Divider(color: kPrimarycolor, thickness: 2),
-          ),
-          const DrawerListileItem(
-            icon: Icon(Icons.people_outline_rounded, color: Colors.white, size: 25),
-            title: 'Invite a friend',
-          ),
-          const Spacer(flex: 2),
-          GestureDetector(
-            onTap: () async {
-              final storage = FlutterSecureStorage();
-              await storage.deleteAll();
-              GoRouter.of(context).go(AppRoute.welcomePath);
-            },
-            child: const DrawerListileItem(
-              icon: RotatedBox(
+            const SizedBox(height: 10),
+            const Padding(
+              padding: EdgeInsets.only(left: 5, right: 30),
+              child: Divider(color: kPrimarycolor, thickness: 2),
+            ),
+            const DrawerListileItem(
+              icon: Icon(Icons.people_outline_rounded, color: Colors.white, size: 25),
+              title: 'Invite a friend',
+            ),
+            const SizedBox(height: 20),
+            _buildGestureTile(
+              icon: const RotatedBox(
                 quarterTurns: 2,
                 child: Icon(Icons.exit_to_app_rounded, color: Colors.white, size: 25),
               ),
               title: 'Log Out',
+              onTap: () async {
+                final storage = const FlutterSecureStorage();
+                await storage.deleteAll();
+                GoRouter.of(context).go(AppRoute.welcomePath);
+              },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  void _handleAvatarUpload() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      final File imageFile = File(picked.path);
+      final bool? confirmed = await showDialog<bool>(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Confirm Avatar"),
+          content: Image.file(imageFile, width: 200, height: 200, fit: BoxFit.cover),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text("Cancel")),
+            ElevatedButton(onPressed: () => Navigator.of(context).pop(true), child: const Text("Confirm")),
+          ],
+        ),
+      );
+
+      if (confirmed == true) {
+        final apiService = GetIt.instance<ApiService>();
+        await apiService.uploadAvatar(user?.username ?? "", imageFile);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Avatar uploaded!")));
+        GoRouter.of(context).push(AppRoute.chatHomePath);
+      }
+    }
+  }
+
+  Widget _buildGestureTile({
+    required Widget icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: DrawerListileItem(icon: icon, title: title),
     );
   }
 }

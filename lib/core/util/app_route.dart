@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +11,12 @@ import 'package:untitled3/features/chat/presentation/pages/chat_screen_testing.d
 import 'package:untitled3/features/chat/presentation/views/chat_view.dart';
 import 'package:untitled3/features/learning/presentation/pages/learning_home.dart';
 import 'package:untitled3/features/learning/presentation/pages/learning_start_screen.dart';
-import 'package:untitled3/features/sound_detection/presentation/pages/sound_monitor_page.dart';
 import 'package:untitled3/features/video_chat/presentation/pages/HandTrackingWidget.dart';
 import 'package:untitled3/features/video_home/presentation/views/home_view.dart';
 import 'package:untitled3/features/search/presentation/views/search_view.dart';
 import 'package:untitled3/features/video_chat/presentation/pages/VideoChatTest.dart';
 import 'package:untitled3/features/video_home/presentation/views/widgets/help_screen.dart';
 import 'package:untitled3/features/account/presentation/pages/account_page.dart';
-import 'package:untitled3/main.dart';
 
 import '../../features/alarm/domain/entities/alarm_entity.dart';
 import '../../features/alarm/presentation/pages/alarm_page.dart';

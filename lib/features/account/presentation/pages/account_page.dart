@@ -51,70 +51,36 @@ class _AccountPageState extends State<AccountPage> {
             }
           },
           builder: (context, state) {
-            // Show spinner while loading initial user or during any update
             if (state.status == AccountStatus.loading) {
               return const Center(child: CircularProgressIndicator());
             }
-
-            // Render form with current state values
             return ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                // Avatar
-                Center(
-                  child: GestureDetector(
-                    onTap: () => context.read<AccountCubit>().updateProfileImage(),
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: state.imageUrl == null || state.imageUrl!.isEmpty? const AssetImage('assets/paper.png') : CachedNetworkImageProvider(state.imageUrl!),
-                    ),
-                  ),
-                ),
+                _AvatarSection(imageUrl: state.imageUrl),
                 const SizedBox(height: 12),
-                Center(
-                  child: Text(
-                    '${state.firstName ?? ''} ${state.lastName ?? ''}',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Center(
-                  child: Text(state.email ?? '', style: const TextStyle(color: Colors.grey)),
-                ),
-
+                _NameEmailSection(state: state),
                 const SizedBox(height: 24),
                 const Divider(),
-
-                // First Name
-                _buildEditableField(
-                  context: context,
+                _EditableField(
                   label: "First Name",
                   value: state.firstName ?? '',
                   icon: Icons.person,
                   onSave: (v) => _updateField(context, state, firstName: v),
                 ),
-
-                // Last Name
-                _buildEditableField(
-                  context: context,
+                _EditableField(
                   label: "Last Name",
                   value: state.lastName ?? '',
                   icon: Icons.person_outline,
                   onSave: (v) => _updateField(context, state, lastName: v),
                 ),
-
-                // Email
-                _buildEditableField(
-                  context: context,
+                _EditableField(
                   label: "Email",
                   value: state.email ?? '',
                   icon: Icons.email,
                   onSave: (v) => _updateField(context, state, email: v),
                 ),
-
-                // Date of Birth
-                _buildEditableField(
-                  context: context,
+                _EditableField(
                   label: "Date of Birth",
                   value: state.dob != null ? state.dob!.toIso8601String().split('T').first : '',
                   icon: Icons.calendar_today,
@@ -123,30 +89,18 @@ class _AccountPageState extends State<AccountPage> {
                     if (d != null) _updateField(context, state, dob: d);
                   },
                 ),
-
-
-            ElevatedButton.icon(
-            icon: const Icon(
-                Icons.arrow_back,
-              color: Colors.white,
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimarycolor,
-            ),
-            label: const Text('Back',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            onPressed: () {
-            if (widget.prevPath.isNotEmpty) {
-              GoRouter.of(context).push(widget.prevPath);
-            }
-            else {
-              throw Exception("No prev path provided");
-            }
-            },
-            ),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  style: ElevatedButton.styleFrom(backgroundColor: kPrimarycolor),
+                  label: const Text('Back', style: TextStyle(color: Colors.white)),
+                  onPressed: () {
+                    if (widget.prevPath.isNotEmpty) {
+                      GoRouter.of(context).push(widget.prevPath);
+                    } else {
+                      throw Exception("No prev path provided");
+                    }
+                  },
+                ),
               ],
             );
           },
@@ -155,8 +109,6 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  /// Helper to show the edit dialog and then dispatch the cubit call,
-  /// passing only the field(s) that changed.
   void _updateField(
       BuildContext context,
       AccountState state, {
@@ -167,21 +119,85 @@ class _AccountPageState extends State<AccountPage> {
       }) {
     final updated = UpdateAccountEntity(
       username: state.username!,
-      firstName: firstName   ?? state.firstName!,
-      lastName:  lastName    ?? state.lastName!,
-      email:     email       ?? state.email!,
-      dateOfBirth: dob       ?? state.dob!,
+      firstName: firstName ?? state.firstName!,
+      lastName: lastName ?? state.lastName!,
+      email: email ?? state.email!,
+      dateOfBirth: dob ?? state.dob!,
     );
     context.read<AccountCubit>().updateUserInfo(updated);
   }
+}
 
-  Widget _buildEditableField({
-    required BuildContext context,
-    required String label,
-    required String value,
-    required IconData icon,
-    required void Function(String) onSave,
-  }) {
+class _AvatarSection extends StatelessWidget {
+  final String? imageUrl;
+
+  const _AvatarSection({this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: () => context.read<AccountCubit>().updateProfileImage(),
+        child: CircleAvatar(
+          radius: 50,
+          backgroundColor: Colors.grey[200],
+          child: ClipOval(
+            child: imageUrl == null || imageUrl!.isEmpty
+                ? Image.asset('assets/paper.png')
+                : CachedNetworkImage(
+              imageUrl: imageUrl!,
+              placeholder: (_, __) => const CircularProgressIndicator(),
+              errorWidget: (_, __, ___) => const Icon(Icons.error),
+              fit: BoxFit.cover,
+              width: 100,
+              height: 100,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NameEmailSection extends StatelessWidget {
+  final AccountState state;
+
+  const _NameEmailSection({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Center(
+          child: Text(
+            '${state.firstName ?? ''} ${state.lastName ?? ''}',
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Center(
+          child: Text(state.email ?? '', style: const TextStyle(color: Colors.grey)),
+        ),
+      ],
+    );
+  }
+}
+
+class _EditableField extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final void Function(String) onSave;
+
+  const _EditableField({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.onSave,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         ListTile(
@@ -207,7 +223,10 @@ class _AccountPageState extends State<AccountPage> {
       context: context,
       builder: (_) => AlertDialog(
         title: Text('Edit $label'),
-        content: TextField(controller: ctl, decoration: InputDecoration(hintText: 'Enter new $label')),
+        content: TextField(
+          controller: ctl,
+          decoration: InputDecoration(hintText: 'Enter new $label'),
+        ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           ElevatedButton(

@@ -6,9 +6,9 @@ abstract class ChatState extends Equatable {
   List<Object?> get props => [];
 }
 
-class ChatLoading extends ChatState {
+class ChatInitial extends ChatState {}
 
-}
+class ChatLoading extends ChatState {}
 
 class ChatMessagesLoadingSuccess extends ChatState {
   final List<ChatMessageEntity> messages;
@@ -37,9 +37,11 @@ class ChatAddingMessage extends ChatState {
   List<Object?> get props => [message];
 }
 
-class ChatInitial extends ChatState {
-}
-
 class ChatUpdating extends ChatState {
+  final List<ChatMessageEntity> messages;
 
-}
+  ChatUpdating({required this.messages});
+
+  @override
+  List<Object?> get props => [messages];
+} 
